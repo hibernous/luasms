@@ -1,0 +1,188 @@
+16.2.1. The +CMS ERROR Final Result Code -- Notifies the Occurrences and Causes of Message Service Failures
+The +CMS ERROR final result code is returned when a message service failure occurs. An error code is provided for programmers to check what causes the message service failure. The +CMS ERROR final result code is specific to SMS AT commands, i.e. the +CMS ERROR final result code will only be outputted by AT commands that are used to perform tasks related to SMS messaging. Below are the SMS AT commands that may output the final result code +CMS ERROR:
++CMGC (command name in text: Send Command)
++CMGD (command name in text: Delete Message)
++CMGL (command name in text: List Messages)
++CMGR (command name in text: Read Message)
++CMGS (command name in text: Sending Message)
++CMGW (command name in text: Write Message to Memory)
++CMSS (command name in text: Send Message from Storage)
++CNMA (command name in text: New Message Acknowledgement to ME/TA)
++CNMI (command name in text: New Message Indications to TE)
++CPMS (command name in text: Preferred Message Storage)
++CRES (command name in text: Restore Settings)
++CSAS (command name in text: Save Settings)
++CSMS (command name in text: Select Message Service)
+The syntax of the +CMS ERROR final result code is:
+
+
+<CR><LF>+CMS ERROR: error_code<CR><LF>
+
+
+
+
+
+
+16.2.1.1. Table of +CMS Error Codes and Their Meanings
+The following table lists some of the +CMS error codes and their meanings.
+
++CMS error code
+	 Meaning
+300  Mobile equipment (ME) failure. Mobile equipment refers to the mobile device that communicates with the wireless network. Usually it is a mobile phone or GSM/GPRS modem. The SIM card is defined as a separate entity and is not part of mobile equipment.
+301  SMS service of mobile equipment (ME) is reserved. See +CMS error code 300 for the meaning of mobile equipment.
+302  The operation to be done by the AT command is not allowed.
+303  The operation to be done by the AT command is not supported.
+304  One or more parameter values assigned to the AT command are invalid. (For PDU mode)
+305  One or more parameter values assigned to the AT command are invalid. (For Text mode)
+310  There is no SIM card.
+311  The SIM card requires a PIN to operate. The AT command +CPIN (command name in text: Enter PIN) can be used to send the PIN to the SIM card.
+312  The SIM card requires a PH-SIM PIN to operate. The AT command +CPIN (command name in text: Enter PIN) can be used to send the PH-SIM PIN to the SIM card.
+313  SIM card failure.
+314  The SIM card is busy.
+315  The SIM card is wrong.
+316  The SIM card requires a PUK to operate. The AT command +CPIN (command name in text: Enter PIN) can be used to send the PUK to the SIM card.
+320  Memory/message storage failure.
+321  The memory/message storage index assigned to the AT command is invalid.
+322  The memory/message storage is out of space.
+330  The SMS center (SMSC) address is unknown.
+331  No network service is available.
+332  Network timeout occurred.
+340  There is no need to send message acknowledgement by the AT command +CNMA (command name in text: New Message Acknowledgement to ME/TA).
+500  An unknown error occurred.
+ 
+CMS ERROR code list (GSM Modem error codes): 
+
+1 - "Unassigned (unallocated) number" 
+This cause indicates that the destination requested by the Mobile Station cannot be reached because, although the number is in a valid format, it is not currently assigned (allocated). 
+
+8 - "Operator determined barring" 
+This cause indicates that the MS has tried to send a mobile originating short message when the MS's network operator or service provider has forbidden such transactions. 
+
+10 - "Call barred" 
+This cause indicates that the outgoing call barred service applies to the short message service for the called destination. 
+
+21 - "Short message transfer rejected" 
+This cause indicates that the equipment sending this cause does not wish to accept this short message, although it could have accepted the short message since the equipment sending this cause is neither busy nor incompatible. 
+
+27 - "Destination out of service" 
+This cause indicates that the destination indicated by the Mobile Station cannot be reached because the interface to the destination is not functioning correctly. The term "not functioning correctly" indicates that a signalling message was unable to be delivered to the remote user; e.g., a physical layer or data link layer failure at the remote user, user equipment off-line, etc. 
+
+28 - "Unidentified subscriber" 
+This cause indicates that the subscriber is not registered in the PLMN (i.e. IMSI not known). 
+
+29 - "Facility rejected" 
+This cause indicates that the facility requested by the Mobile Station is not supported by the PLMN. 
+
+30 - "Unknown subscriber" 
+This cause indicates that the subscriber is not registered in the HLR (i.e. IMSI or directory number is not allocated to a subscriber). 
+
+38 - "Network out of order" "El mensaje pudo haber llegado pero no hubo confirmacion del servidor"
+This cause indicates that the network is not functioning correctly and that the condition is likely to last a relatively long period of time; e.g., immediately reattempting the short message transfer is not likely to be successful. 
+
+41 - "Temporary failure" 
+This cause indicates that the network is not functioning correctly and that the condition is not likely to last a long period of time; e.g., the Mobile Station may wish to try another short message transfer attempt almost immediately. 
+
+42 - "Congestion" 
+This cause indicates that the short message service cannot be serviced because of high traffic. 
+
+47 - "Resources unavailable, unspecified" 
+This cause is used to report a resource unavailable event only when no other cause applies. 
+
+50 - "Requested facility not subscribed" 
+This cause indicates that the requested short message service could not be provided by the network because the user has not completed the necessary administrative arrangements with its supporting networks. 
+
+69 - "Requested facility not implemented" 
+This cause indicates that the network is unable to provide the requested short message service. 
+
+81 - "Invalid short message transfer reference value" 
+This cause indicates that the equipment sending this cause has received a message with a short message reference which is not currently in use on the MS-network interface. 
+
+95 - "Invalid message, unspecified" 
+This cause is used to report an invalid message event only when no other cause in the invalid message class applies. 
+
+96 - "Invalid mandatory information" 
+This cause indicates that the equipment sending this cause has received a message where a mandatory information element is missing and/or has a content error (the two cases are indistinguishable). 
+
+97 - "Message type non-existent or not implemented" 
+This cause indicates that the equipment sending this cause has received a message with a message type it does not recognize either because this is a message not defined or defined but not implemented by the equipment sending this cause. 
+
+98 - "Message not compatible with short message protocol state" 
+This cause indicates that the equipment sending this cause has received a message such that the procedures do not indicate that this is a permissible message to receive while in the short message transfer state. 
+
+99 - "Information element non-existent or not implemented" 
+This cause indicates that the equipment sending this cause has received a message which includes information elements not recognized because the information element identifier is not defined or it is defined but not implemented by the equipment sending the cause. However, the information element is not required to be present in the message in order for the equipment sending the cause to process the message. 
+
+111 - "Protocol error, unspecified" 
+This cause is used to report a protocol error event only when no other cause applies. 
+
+127 - "Interworking, unspecified" 
+This cause indicates that there has been interworking with a network which does not provide causes for actions it takes; thus, the precise cause for a message which is being send cannot be ascertained. 
+
+0...127 - Other values in this range are reserved, defined by GSM 04.11 Annex E-2 values 
+
+128 - Telematic interworking not supported x 
+129 - Short message Type 0 not supported x x 
+130 - Cannot replace short message x x 
+143 - Unspecified TP-PID error x x 
+144 - Data coding scheme (alphabet) not supported x 
+145 - Message class not supported x 
+159 - Unspecified TP-DCS error x x 
+160 - Command cannot be actioned x 
+161 - Command unsupported x 
+175 - Unspecified TP-Command error x 
+176 - TPDU not supported x x 
+192 - SC busy x 
+193 - No SC subscription x 
+194 - SC system failure x 
+195 - Invalid SME address x 
+196 - Destination SME barred x 
+197 - SM Rejected-Duplicate SM x 
+198 - TP-VPF not supported X 
+199 - TP-VP not supported X 
+208 - SIM SMS storage full x 
+209 - No SMS storage capability in SIM x 
+210 - Error in MS x 
+211 - Memory Capacity Exceeded X 
+212 - SIM Application Toolkit Busy x x 
+255 - Unspecified error cause 
+
+128...255 - Other values in this range are reserved, defined by GSM 03.40 subclause 9.2.3.22 values 
+
+300 - ME failure 
+301 - SMS service of ME reserved 
+302 - operation not allowed 
+303 - operation not supported 
+304 - invalid PDU mode parameter 
+305 - invalid text mode parameter 
+310 - SIM not inserted 
+311 - SIM PIN required 
+312 - PH-SIM PIN required 
+313 - SIM failure 
+314 - SIM busy 
+315 - SIM wrong 
+316 - SIM PUK required 
+317 - SIM PIN2 required 
+318 - SIM PUK2 required 
+320 - memory failure 
+321 - invalid memory index 
+322 - memory full 
+330 - SMSC address unknown 
+331 - no network service 
+332 - network timeout 
+340 - no +CNMA acknowledgement expected 
+500 - unknown error 
+
+256...511 - Other values in this range are reserved 
+
+512... - manufacturer specific 
+
+17 - "Network failure". 
+This cause is sent to the MS if the MSC cannot service an MS generated request because of PLMN failures, e.g. problems in MAP. 
+
+22 - "Congestion". 
+This cause is sent if the service request cannot be actioned because of congestion (e.g. no channel, facility busy/congested etc.). 
+
+22 - "Memory capacity exceeded". 
+This cause indicates that the mobile station cannot store the incoming short message due to lack of storage capacity. 
+
+Note that error "22" is defined twice. It is likely that "CMS ERROR 22" would be due to the first definition, while the second definition is likely to only be a status code for delivery reports.

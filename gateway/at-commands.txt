@@ -1,0 +1,46 @@
+AT+CPIN?
++CPIN: READY
+
+OK
+	Esto nos avisa que esta listo para trabajar si nos responde con
+	ERROR es que hace falta poner el pin AT+CPIN=1234 por ejemplo
+AT+CPMS?
++CPMS: "SM",0,30,"SM",0,30,"ME",2,100
+
+OK
+	Esto nos indica que por default accede a "SM" (SIM Memory, Creo:))
+	y que en "SM" tiene 0 mensajes de 30, Tambien está "ME", la memoria
+	del dispositivo (modem) y que esta tiene 2 mensajes de 100.
+AT+CPMS="ME"
++CPMS: 2,100,0,30,2,100
+
+OK
+	Con este comando Seteamos la memoria a la que queremos tener acceso
+
+AT+CMGF?
++CMGF: 0
+
+OK
+
+AT+CMGF=?
++CMGF: (0-1)
+
+OK
+	Este nos indica que tiene dos valores posibles 1 para modo texto 
+	que es el que tenemos que usar para poder leer y/o enviar los mensajes
+	el modo 1 solo sirve para enviar mesajes simples
+	
+AT+CMGL="ALL"
++CMGL: 0, "REC UNREAD","8235162222",,"11/09/19,17:31:54-12"
+Probando los mensajes- Fabian
++CMGL: 1, "REC UNREAD","8235162222",,"11/09/19,18:00:16-12"
+ASDFFASDASDF AFAS ASDF AFSD- Fabian
+
+OK
+	Este comando nos muestra todos los mensaje que hay grabados en
+	una lista como se ve.
+
+AT+CMGR=1
++CMGR: "REC READ","8235162222",,"11/09/19,18:00:16-12"
+
+
