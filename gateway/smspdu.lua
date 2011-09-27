@@ -61,9 +61,9 @@ function decode(str)
 	trspta.sender = sender
 	trspta.fecha = fecha
 	trspta.concat= "0,0,0"
-	trspta.id = 0
+	trspta.part_id = 0
 	trspta.parts = 1
-	trspta.idx = 1
+	trspta.part_idx = 1
 	local i = 1
 	local msg = ""
 	if tonumber(first_oct_sms,16) >= 64 then
@@ -118,9 +118,9 @@ end
 
 function pdu_getList(dev)
 	local trspta = {}
-	rspta, text, status, str, serr =command(dev,"+CMGF=0") 		-- Setea Modo PDU
+	local rspta, text, status, str, serr =command(dev,"+CMGF=0") 		-- Setea Modo PDU
 	if rspta.status == "OK" then
-		tmsgs = checkMsgs(dev)
+		local tmsgs = checkMsgs(dev)
 		for k, t in pairs(tmsgs) do					-- Procesa cada Memoria
 			if tonumber(t.cnt) > 0 then
 				rspta, text, status, fullstr, serr = command(dev,string.format('+CPMS="%s"',k))
@@ -129,7 +129,7 @@ function pdu_getList(dev)
 				for i, line in ipairs(j) do
 --					print("------------------------------")
 --					print(i,line)
-					_, _, idx, status, inbook, octLen, msg = string.find(line,'([^,]*),([^,]*),([^,]*),([^,]*)\r\n(%x*)')
+					local _, _, idx, status, inbook, octLen, msg = string.find(line,'([^,]*),([^,]*),([^,]*),([^,]*)\r\n(%x*)')
 --					print(k,idx, status, inbook, octLen, msg)
 					if msg then
 						trspta[#trspta+1], msg = decode(msg)
@@ -138,23 +138,22 @@ function pdu_getList(dev)
 						trspta[#trspta].idx = idx
 						trspta[#trspta].status = status
 						trspta[#trspta].inbook = inbook
-						trspta[#trspta].fullmsg = line
+						trspta[#trspta].fullmsg = msg
 					end
 				end
 			end
 		end
-	else -- Modo texto no soportado
-		print("Modo Texto no Soportado")
 	end
 	return trspta
 end
 
 
-
+dbCon = openDB()
 dev = openPort("/dev/ttyUSB0")
 trspta = pdu_getList(dev)
 for i, t in ipairs(trspta) do
 	print(t.mem, t.idx, t.status, t.sender, t.fecha, t.concat, t.part_id, t.part_idx, t.parts, "\n"..t.msg)
 	print("")
+	saveMsg(t,dbCon)
 end
 dev:close()

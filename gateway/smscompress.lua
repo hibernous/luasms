@@ -63,12 +63,14 @@ function capital(s)
 end
 
 function addslashes(s)
+	if s then
 	s = string.gsub(s,"'", function (b) 
 		return "\\"..b 
 		end)
 	s = string.gsub(s,'"', function (b) 
 		return "\\"..b 
 		end)
+	end
 	return s
 end
 
