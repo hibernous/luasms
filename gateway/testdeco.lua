@@ -1,20 +1,4 @@
-require("smscommon")
---msgType = { "0"="REC UNREAD", "1"="REC READ", "2"="STO UNSENT",  "3"="STO SENT", "4"="ALL" }
-function hex162char (s)
-	s = string.gsub(s, "(00%x%x)", function (h)
---			print(h, string.char(tonumber(h, 16)))
-			return string.char(tonumber(h, 16))
-		end)
-	return s
-end
-
-function hex82char (s)
-	s = string.gsub(s, "(%x%x)", function (h)
---			print(h, string.char(tonumber(h, 16)))
-			return string.char(tonumber(h, 16))
-		end)
-	return s
-end
+require ("smscommon")
 
 function decode(rstr)
 	local str = rstr
@@ -49,7 +33,6 @@ function decode(rstr)
 		return s:reverse()
 		end)
 	fecha = fecha:gsub("(%d%d)(%d%d)(%d%d)(%d%d)(%d%d)(%d%d)(%d%d)", "20%1-%2-%3 %4:%5:%6+%7")
-
 
 	print("Header Len: "..hl)
 	print("Numbering Plan: "..numbering_plan)
@@ -123,34 +106,26 @@ function decode(rstr)
 	return trspta, msg
 end
 
-function pdu_getList(dev)
-	local trspta = {}
-	if dev == nil then return trspta end
+
+ldevs = {
+	{ port = "/dev/ttyUSB0", number = "+543722380337" }
+}
+
+local modems = setModem(ldevs,"matrix")
+local gateway = "matrix"
+for _, com in pairs(modems) do
+
+	readAllMessages(com)
 	local rspta, text, status, str, serr =command(dev,"+CMGF=0") 		-- Setea Modo PDU
-	if rspta.status == "OK" then
-		local tmsgs = checkMsgs(dev)
-		for k, t in pairs(tmsgs) do					-- Procesa cada Memoria
-			if tonumber(t.cnt) > 0 then
-				rspta, text, status, fullstr, serr = command(dev,string.format('+CPMS="%s"',k))
-				rspta, text, status, fullstr, serr  = command(dev,'+CMGL=4')
-				local j = split(rspta.text, "+CMGL: ")
-				for i, line in ipairs(j) do
---					print("------------------------------")
---					print(i,line)
-					local _, _, idx, status, inbook, octLen, msg = string.find(line,'([^,]*),([^,]*),([^,]*),([^,]*)\r\n(.*)')
---					print(k,idx, status, inbook, octLen, msg)
-					if msg then
-						trspta[#trspta+1], msg = decode(msg)
-						trspta[#trspta].mem = k
-						trspta[#trspta].dev = dev
-						trspta[#trspta].idx = idx
-						trspta[#trspta].status = status
-						trspta[#trspta].inbook = inbook
-						trspta[#trspta].fullmsg = line
-					end
-				end
-			end
+	rspta, text, status, fullstr, serr  = command(dev,'+CMGL=4')
+	print(text)
+	local j = split(rspta.text, "+CMGL: ")
+	for i, line in ipairs(j) do
+		local _, _, idx, status, inbook, octLen, msg = string.find(line,'([^,]*),([^,]*),([^,]*),([^,]*)\r\n(.*)')
+		if msg then
+			print(decode(msg))
 		end
 	end
-	return trspta
+		
+		
 end

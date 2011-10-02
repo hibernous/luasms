@@ -112,6 +112,7 @@ end
 function readAllMessages(modem)
 	local dev = modem.dev
 	local trspta = {}
+	if dev == nil then return trspta end
 	rspta, text, status, str, serr =command(dev,"+CMGF=1") 		-- Setea Modo Texto
 	if rspta.status == "OK" then
 		local rspta, serr = command(dev,"+CPMS?")				-- Obtiene los valores de las distintas memorias y cantidad de mensajes en cada una
@@ -129,6 +130,7 @@ function readAllMessages(modem)
 					if s and e and status then
 						line = line:sub(1,s-1)
 					end
+print (line)
 					for idx, status, callerId, nada, fecha, msg in string.gfind(line, '(%d+),"([^"]*)","([^",]*)",([^,]*),"([^"]*)"\r\n(.+)') do
 						trspta[#trspta+1] = {}
 						trspta[#trspta].mem = k
@@ -136,8 +138,8 @@ function readAllMessages(modem)
 						trspta[#trspta].cmd = "+CMGL: "
 						trspta[#trspta].msg = msg or ""
 						trspta[#trspta].fecha = fecha or ""
-						trspta[#trspta].fecha = "20"..t.fecha:gsub("/","-")
-						trspta[#trspta].fecha = t.fecha:gsub(","," ")
+						trspta[#trspta].fecha = "20"..fecha:gsub("/","-")
+						trspta[#trspta].fecha = trspta[#trspta].fecha:gsub(","," ")
 						trspta[#trspta].nose = nada or ""
 						trspta[#trspta].callerId = callerId or ""
 						trspta[#trspta].status = status or ""
@@ -196,9 +198,7 @@ function sendMessage(dev, nro, msg)
 	print(tosend)
 	print("------------------------------------------")
 	dev:write(tosend)
-	rspta = leer(dev)
-	print("R Msg2", rspta)
-
+	return leer(dev)
 end
 
 function proccess(dev)
@@ -231,6 +231,63 @@ function proccess(dev)
 	else
 		print(info)
 	end
+end
+
+function setModem(ldevs, gateway)
+	modem = {}
+	IMSI = {}
+	for _, a in ipairs(ldevs) do
+		print("Abriendo port "..a.port)
+		local topen = socket.gettime()
+		dev , info = openPort(a.port)
+		print(info)
+		if dev then
+			topen = socket.gettime() - topen
+			local tmsg = command(dev,"")
+			if tmsg.status == "OK" then
+				IMSIdentity 				= command(dev,'+CIMI')		-- InternationalMobileSubscriberIdentity
+				modem[a.port] = {}
+				modem[a.port].port	 		= a.port or "undefined"
+				modem[a.port].gateway 		= gateway or "undefined"
+				modem[a.port].number 		= a.number or "undefined"
+				modem[a.port].timeopen 		= topen
+				modem[a.port].IMSIdentity	= IMSIdentity.text
+				_, modem[a.port].smsGateWay	= command(dev,"+CSCA?") 	-- obtiene el gateway y el modo 
+				_, modem[a.port].operator	= command(dev,"+COPS?") 	-- Nombre del proveedor
+				modem[a.port].dev			= dev						-- handle port
+				_, modem[a.port].marca 		= command(dev,'+CGMI')		-- Marca
+				_, modem[a.port].modelo		= command(dev,'+CGMM')		-- Modelo
+				_, modem[a.port].revision 		= command(dev,'+CGMR')		-- Revision
+				_, modem[a.port].serialNumber	= command(dev,'+CGSN')		-- Serial Number
+				_, modem[a.port].signalLevel	= command(dev,"+CSQ") 		--Signal level
+				modem[a.port].enabled		= true
+				if IMSIdentity.status == "OK" then
+					if IMSI[IMSIdentity.text] then
+						print(IMSIdentity.text,modem[IMSI[IMSIdentity.text]].timeopen,topen)
+						if 	modem[IMSI[IMSIdentity.text]].timeopen > topen then 
+							modem[IMSI[IMSIdentity.text]].dev:close()
+							modem[IMSI[IMSIdentity.text]] = nil
+							IMSI[IMSIdentity.text] = a.port
+						else
+							modem[a.port].dev:close()
+							modem[a.port] = nil
+						end
+					else
+						IMSI[IMSIdentity.text] = a.port
+					end
+				else
+					print(a.port.." No tiene SIM o SIM no funciona")
+					modem[a.port].enabled		= false
+					modem[a.port].dev:close()
+					modem[a.port].dev = nil
+				end
+			else
+				print(a.." no es modem")
+				dev:close()
+			end
+		end
+	end
+	return modem
 end
 
 function checkModem(ldevs)
