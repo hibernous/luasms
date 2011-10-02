@@ -6,12 +6,14 @@ function dbConStatus(dbCon)
 		return false
 	end
 	if tostring(dbCon):match("(closed)")
+	or tostring(dbCon):match("ERROR")
 	then
 		return false
 	else
 		return true
 	end
 end
+
 function mysqlEscape(s)
 	if s then
 		s = string.gsub(s,"'", function (b) 
@@ -87,14 +89,48 @@ function doSQL(dbCon,str)
 	return rslt, serr
 end
 
-function saveMsg(t,dbCon)
+function saveMsg(t,com,dbCon)
 	vt = "0"
 --	local vt = isVoto(t,dbCon)
-	sql = string.format([[INSERT INTO recibe (`fecha`, `concat`, `partId`, `partNr`, `parts`, `callerId`, `msg`, `smsraw`, `procesado`)
-	VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')]], t.fecha, t.concat, t.part_id, t.part_idx, t.parts, t.sender, mysqlEscape(t.msg), mysqlEscape(t.fullmsg), vt)
+	sql = string.format([[INSERT INTO recibe (
+		`fecha`, 
+		`concat`, 
+		`partId`, 
+		`partNr`, 
+		`parts`, 
+		`callerId`,
+		`dst`,
+		`msg`, 
+		`smsraw`, 
+		`procesado`,
+		`gateway`,
+		`modem`,
+		`port`,
+		`IMSIdentity`,
+		`operator`
+		)
+	VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )]], 
+		t.fecha, 
+		t.concat, 
+		t.part_id, 
+		t.part_idx, 
+		t.parts, 
+		t.sender, 
+		com.number,
+		mysqlEscape(t.msg), 
+		mysqlEscape(t.fullmsg), 
+		vt,
+		com.gateway,
+		string.format("%s-%s SN(%s)",tostring(com.marca), tostring(com.modelo), tostring(com.serialNumber)),
+		com.port,
+		com.IMSIdentity,
+		com.operator
+		)
 	local rslt, serr = doSQL(dbCon,sql)
 	if serr == nil then
---		sendMessage(t.dev, t.callerId, t.msg)
+		sql = string.format([[INSERT INTO envia (tonumber, msg)
+		VALUES ('%s', '%s')]], t.sender, "SMS recibido")
+		doSQL(dbCon,sql)
 		rspta, str, serr = command(t.dev,string.format('+CPMS="%s"',t.mem))
 		trspta = command(t.dev,string.format('+CMGD=%s', t.idx))
 		print("Borra Reg"..t.idx,trspta.status,trspta.text)
