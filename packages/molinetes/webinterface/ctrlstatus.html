@@ -1,0 +1,536 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <title>Controladores</title>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+	<meta  CONTENT="NO-CACHE" META HTTP-EQUIV="CACHE-CONTROL" />
+	<meta  http-equiv="expires" content="-1" />
+	<LINK REL="stylesheet" TYPE="text/css" HREF="themes/active/site.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/grid/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/css/themes/redmond/jquery-ui-1.8.16.custom.css" />
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/js/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/lib/js/jquery-1.6.4.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/i18n/grid.locale-es.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/jquery.jqGrid.min.js" ></script>
+<head>
+<body>
+		<DIV ID="content">
+			<DIV ID='status_1' style="float:left; width:350px; height:63px; border:1px solid red;">
+				<div ID="name_1">Descripcion</div>
+				<div>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Tipo: <SPAN ID="type_1"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">StartTime: <SPAN ID="start_1"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Hora: <SPAN ID="hora_1"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Ultima Fichada: <SPAN ID="ultima_1"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Entraron: <SPAN ID="entraron_1"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Salieron: <SPAN ID="salieron_1"></SPAN></DIV>
+				</div>
+				<DIV ID="details_1" style="width:348px;margin:0 0 0 1px;position:absolute;float:left;display:none;background-color:#FFF;">
+					<table >
+						<tr>
+							<th width="60px">Proceso</th>
+							<th width="40px">Hora</th>
+							<th width="50px">Status</th>
+							<th width="30px">Error</th>
+							<th >Detalle</th>
+						</tr>
+						<tr>
+							<td>Chk Hora</td>
+							<td ID="CHK_HORA_HORA_1"></td>
+							<td ID="CHK_HORA_MSG_1"></td>
+							<td ID="CHK_HORA_ERRORPERCENT_1"></td>
+							<td ID="CHK_HORA_DETALLE_1"></td>
+						</tr>
+						<tr>
+							<td>Fichadas</td>
+							<td ID="CHK_FICHADAS_HORA_1"></td>
+							<td ID="CHK_FICHADAS_MSG_1"></td>
+							<td ID="CHK_FICHADAS_ERRORPERCENT_1"></td>
+							<td ID="CHK_FICHADAS_DETALLE_1"></td>
+						</tr>
+						<tr>
+							<td>Leer Fi.</td>
+							<td ID="GET_FICHADA_HORA_1"></td>
+							<td ID="GET_FICHADA_MSG_1"></td>
+							<td ID="GET_FICHADA_ERRORPERCENT_1"></td>
+							<td ID="GET_FICHADA_DETALLE_1"></td>
+						</tr>
+					</table>
+				</DIV>
+			</DIV>
+			<DIV ID='status_2' style="float:left; width:350px; height:63px; border:1px solid red;">
+				<div ID="name_2">Descripcion</div>
+				<div>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Tipo: <SPAN ID="type_2"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">StartTime: <SPAN ID="start_2"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Hora: <SPAN ID="hora_2"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Ultima Fichada: <SPAN ID="ultima_2"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Entraron: <SPAN ID="entraron_2"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Salieron: <SPAN ID="salieron_2"></SPAN></DIV>
+				</div>
+				<DIV ID="details_2" style="width:348px;margin:0 0 0 1px;position:absolute;float:left;display:none;background-color:#FFF;">
+					<table >
+						<tr>
+							<th width="60px">Proceso</th>
+							<th width="40px">Hora</th>
+							<th width="50px">Status</th>
+							<th width="30px">Error</th>
+							<th >Detalle</th>
+						</tr>
+						<tr>
+							<td>Chk Hora</td>
+							<td ID="CHK_HORA_HORA_2"></td>
+							<td ID="CHK_HORA_MSG_2"></td>
+							<td ID="CHK_HORA_ERRORPERCENT_2"></td>
+							<td ID="CHK_HORA_DETALLE_2"></td>
+						</tr>
+						<tr>
+							<td>Fichadas</td>
+							<td ID="CHK_FICHADAS_HORA_2"></td>
+							<td ID="CHK_FICHADAS_MSG_2"></td>
+							<td ID="CHK_FICHADAS_ERRORPERCENT_2"></td>
+							<td ID="CHK_FICHADAS_DETALLE_2"></td>
+						</tr>
+						<tr>
+							<td>Leer Fi.</td>
+							<td ID="GET_FICHADA_HORA_2"></td>
+							<td ID="GET_FICHADA_MSG_2"></td>
+							<td ID="GET_FICHADA_ERRORPERCENT_2"></td>
+							<td ID="GET_FICHADA_DETALLE_2"></td>
+						</tr>
+					</table>
+				</DIV>
+			</DIV>
+			<DIV ID='status_3' style="float:left; width:350px; height:63px; border:1px solid red;">
+				<div ID="name_3">Descripcion</div>
+				<div>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Tipo: <SPAN ID="type_3"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">StartTime: <SPAN ID="start_3"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Hora: <SPAN ID="hora_3"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Ultima Fichada: <SPAN ID="ultima_3"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Entraron: <SPAN ID="entraron_3"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Salieron: <SPAN ID="salieron_3"></SPAN></DIV>
+				</div>
+				<DIV ID="details_3" style="width:348px;margin:0 0 0 1px;position:absolute;float:left;display:none;background-color:#FFF;">
+					<table >
+						<tr>
+							<th width="60px">Proceso</th>
+							<th width="40px">Hora</th>
+							<th width="50px">Status</th>
+							<th width="30px">Error</th>
+							<th >Detalle</th>
+						</tr>
+						<tr>
+							<td>Chk Hora</td>
+							<td ID="CHK_HORA_HORA_3"></td>
+							<td ID="CHK_HORA_MSG_3"></td>
+							<td ID="CHK_HORA_ERRORPERCENT_3"></td>
+							<td ID="CHK_HORA_DETALLE_3"></td>
+						</tr>
+						<tr>
+							<td>Fichadas</td>
+							<td ID="CHK_FICHADAS_HORA_3"></td>
+							<td ID="CHK_FICHADAS_MSG_3"></td>
+							<td ID="CHK_FICHADAS_ERRORPERCENT_3"></td>
+							<td ID="CHK_FICHADAS_DETALLE_3"></td>
+						</tr>
+						<tr>
+							<td>Leer Fi.</td>
+							<td ID="GET_FICHADA_HORA_3"></td>
+							<td ID="GET_FICHADA_MSG_3"></td>
+							<td ID="GET_FICHADA_ERRORPERCENT_3"></td>
+							<td ID="GET_FICHADA_DETALLE_3"></td>
+						</tr>
+					</table>
+				</DIV>
+			</DIV>
+			<DIV ID='status_4' style="float:left; width:350px; height:63px; border:1px solid red;">
+				<div ID="name_4">Descripcion</div>
+				<div>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Tipo: <SPAN ID="type_4"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">StartTime: <SPAN ID="start_4"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Hora: <SPAN ID="hora_4"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Ultima Fichada: <SPAN ID="ultima_4"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Entraron: <SPAN ID="entraron_4"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Salieron: <SPAN ID="salieron_4"></SPAN></DIV>
+				</div>
+				<DIV ID="details_4" style="width:348px;margin:0 0 0 1px;position:absolute;float:left;display:none;background-color:#FFF;">
+					<table >
+						<tr>
+							<th width="60px">Proceso</th>
+							<th width="40px">Hora</th>
+							<th width="50px">Status</th>
+							<th width="30px">Error</th>
+							<th >Detalle</th>
+						</tr>
+						<tr>
+							<td>Chk Hora</td>
+							<td ID="CHK_HORA_HORA_4"></td>
+							<td ID="CHK_HORA_MSG_4"></td>
+							<td ID="CHK_HORA_ERRORPERCENT_4"></td>
+							<td ID="CHK_HORA_DETALLE_4"></td>
+						</tr>
+						<tr>
+							<td>Fichadas</td>
+							<td ID="CHK_FICHADAS_HORA_4"></td>
+							<td ID="CHK_FICHADAS_MSG_4"></td>
+							<td ID="CHK_FICHADAS_ERRORPERCENT_4"></td>
+							<td ID="CHK_FICHADAS_DETALLE_4"></td>
+						</tr>
+						<tr>
+							<td>Leer Fi.</td>
+							<td ID="GET_FICHADA_HORA_4"></td>
+							<td ID="GET_FICHADA_MSG_4"></td>
+							<td ID="GET_FICHADA_ERRORPERCENT_4"></td>
+							<td ID="GET_FICHADA_DETALLE_4"></td>
+						</tr>
+					</table>
+				</DIV>
+			</DIV>
+			<DIV ID='status_5' style="float:left; width:350px; height:63px; border:1px solid red;">
+				<div ID="name_5">Descripcion</div>
+				<DIV ID="details_5" style="width:348px;margin:0 0 0 1px;position:absolute;float:left;display:none;background-color:#FFF;">
+					<table >
+						<tr>
+							<th width="60px">Proceso</th>
+							<th width="40px">Hora</th>
+							<th width="50px">Status</th>
+							<th width="30px">Error</th>
+							<th >Detalle</th>
+						</tr>
+						<tr>
+							<td>Chk Hora</td>
+							<td ID="CHK_HORA_HORA_5"></td>
+							<td ID="CHK_HORA_MSG_5"></td>
+							<td ID="CHK_HORA_ERRORPERCENT_5"></td>
+							<td ID="CHK_HORA_DETALLE_5"></td>
+						</tr>
+						<tr>
+							<td>Fichadas</td>
+							<td ID="CHK_FICHADAS_HORA_5"></td>
+							<td ID="CHK_FICHADAS_MSG_5"></td>
+							<td ID="CHK_FICHADAS_ERRORPERCENT_5"></td>
+							<td ID="CHK_FICHADAS_DETALLE_5"></td>
+						</tr>
+						<tr>
+							<td>Leer Fi.</td>
+							<td ID="GET_FICHADA_HORA_5"></td>
+							<td ID="GET_FICHADA_MSG_5"></td>
+							<td ID="GET_FICHADA_ERRORPERCENT_5"></td>
+							<td ID="GET_FICHADA_DETALLE_5"></td>
+						</tr>
+					</table>
+				</DIV>
+				<div>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Tipo: <SPAN ID="type_5"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">StartTime: <SPAN ID="start_5"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Hora: <SPAN ID="hora_5"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Ultima Fichada: <SPAN ID="ultima_5"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Entraron: <SPAN ID="entraron_5"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Salieron: <SPAN ID="salieron_5"></SPAN></DIV>
+				</div>
+			</DIV>
+			<DIV ID='status_6' style="float:left; width:350px; height:63px; border:1px solid red;">
+				<div ID="name_6">Descripcion</div>
+				<DIV ID="details_6" style="width:348px;margin:0 0 0 1px;position:absolute;float:left;display:none;background-color:#FFF;">
+					<table >
+						<tr>
+							<th width="60px">Proceso</th>
+							<th width="40px">Hora</th>
+							<th width="50px">Status</th>
+							<th width="30px">Error</th>
+							<th >Detalle</th>
+						</tr>
+						<tr>
+							<td>Chk Hora</td>
+							<td ID="CHK_HORA_HORA_6"></td>
+							<td ID="CHK_HORA_MSG_6"></td>
+							<td ID="CHK_HORA_ERRORPERCENT_6"></td>
+							<td ID="CHK_HORA_DETALLE_6"></td>
+						</tr>
+						<tr>
+							<td>Fichadas</td>
+							<td ID="CHK_FICHADAS_HORA_6"></td>
+							<td ID="CHK_FICHADAS_MSG_6"></td>
+							<td ID="CHK_FICHADAS_ERRORPERCENT_6"></td>
+							<td ID="CHK_FICHADAS_DETALLE_6"></td>
+						</tr>
+						<tr>
+							<td>Leer Fi.</td>
+							<td ID="GET_FICHADA_HORA_6"></td>
+							<td ID="GET_FICHADA_MSG_6"></td>
+							<td ID="GET_FICHADA_ERRORPERCENT_6"></td>
+							<td ID="GET_FICHADA_DETALLE_6"></td>
+						</tr>
+					</table>
+				</DIV>
+				<div>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Tipo: <SPAN ID="type_6"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">StartTime: <SPAN ID="start_6"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Hora: <SPAN ID="hora_6"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Ultima Fichada: <SPAN ID="ultima_6"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Entraron: <SPAN ID="entraron_6"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Salieron: <SPAN ID="salieron_6"></SPAN></DIV>
+				</div>
+			</DIV>
+			<DIV ID='status_7' style="float:left; width:350px; height:63px; border:1px solid red;">
+				<div ID="name_7">Descripcion</div>
+				<DIV ID="details_7" style="width:348px;margin:0 0 0 1px;position:absolute;float:left;display:none;background-color:#FFF;">
+					<table >
+						<tr>
+							<th width="60px">Proceso</th>
+							<th width="40px">Hora</th>
+							<th width="50px">Status</th>
+							<th width="30px">Error</th>
+							<th >Detalle</th>
+						</tr>
+						<tr>
+							<td>Chk Hora</td>
+							<td ID="CHK_HORA_HORA_7"></td>
+							<td ID="CHK_HORA_MSG_7"></td>
+							<td ID="CHK_HORA_ERRORPERCENT_7"></td>
+							<td ID="CHK_HORA_DETALLE_7"></td>
+						</tr>
+						<tr>
+							<td>Fichadas</td>
+							<td ID="CHK_FICHADAS_HORA_7"></td>
+							<td ID="CHK_FICHADAS_MSG_7"></td>
+							<td ID="CHK_FICHADAS_ERRORPERCENT_7"></td>
+							<td ID="CHK_FICHADAS_DETALLE_7"></td>
+						</tr>
+						<tr>
+							<td>Leer Fi.</td>
+							<td ID="GET_FICHADA_HORA_7"></td>
+							<td ID="GET_FICHADA_MSG_7"></td>
+							<td ID="GET_FICHADA_ERRORPERCENT_7"></td>
+							<td ID="GET_FICHADA_DETALLE_7"></td>
+						</tr>
+					</table>
+				</DIV>
+				<div>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Tipo: <SPAN ID="type_7"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">StartTime: <SPAN ID="start_7"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Hora: <SPAN ID="hora_7"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Ultima Fichada: <SPAN ID="ultima_7"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Entraron: <SPAN ID="entraron_7"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Salieron: <SPAN ID="salieron_7"></SPAN></DIV>
+				</div>
+			</DIV>
+			<DIV ID='status_8' style="float:left; width:350px; height:63px; border:1px solid red;">
+				<div ID="name_8">Descripcion</div>
+				<DIV ID="details_8" style="width:348px;margin:0 0 0 1px;position:absolute;float:left;display:none;background-color:#FFF;">
+					<table>
+						<tr>
+							<th width="60px">Proceso</th>
+							<th width="40px">Hora</th>
+							<th width="50px">Status</th>
+							<th width="30px">Error</th>
+							<th >Detalle</th>
+						</tr>
+						<tr>
+							<td>Chk Hora</td>
+							<td ID="CHK_HORA_HORA_8"></td>
+							<td ID="CHK_HORA_MSG_8"></td>
+							<td ID="CHK_HORA_ERRORPERCENT_8"></td>
+							<td ID="CHK_HORA_DETALLE_8"></td>
+						</tr>
+						<tr>
+							<td>Fichadas</td>
+							<td ID="CHK_FICHADAS_HORA_8"></td>
+							<td ID="CHK_FICHADAS_MSG_8"></td>
+							<td ID="CHK_FICHADAS_ERRORPERCENT_8"></td>
+							<td ID="CHK_FICHADAS_DETALLE_8"></td>
+						</tr>
+						<tr>
+							<td>Leer Fi.</td>
+							<td ID="GET_FICHADA_HORA_8"></td>
+							<td ID="GET_FICHADA_MSG_8"></td>
+							<td ID="GET_FICHADA_ERRORPERCENT_8"></td>
+							<td ID="GET_FICHADA_DETALLE_8"></td>
+						</tr>
+					</table>
+				</DIV>
+				<div stile="position:relative;width:100%;">
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Tipo: <SPAN ID="type_8"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">StartTime: <SPAN ID="start_8"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Hora: <SPAN ID="hora_8"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Ultima Fichada: <SPAN ID="ultima_8"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Entraron: <SPAN ID="entraron_8"></SPAN></DIV>
+					<DIV style="float:left; width:48%;margin:0 1% 0 1%;">Salieron: <SPAN ID="salieron_8"></SPAN></DIV>
+				</div>
+			</DIV>
+		</DIV><!-- End content -->
+<script>
+
+function createDiv(data){
+  var newdiv = document.createElement('div');
+  var divIdName = 'ctrl_'+arguments[0];
+  newdiv.setAttribute('id',divIdName);
+  newdiv.style.width = "100px";
+  newdiv.style.height = "100px";
+  newdiv.style.left = "100px";
+  newdiv.style.top = arguments[0]+"00px";
+  newdiv.style.position = "absolute";
+  newdiv.style.background = "#FF0000";
+  newdiv.style.border = "1px solid #000000";
+  newdiv.innerHTML = 'Test';
+
+  var lnk = document.createElement('a');
+  if(lnk.addEventListener){
+    lnk.addEventListener('click', (function(i){
+             return function(){
+                   document.body.removeChild(i)}
+             })(newdiv), false);
+  }else
+   if(lnk.attachEvent){
+    lnk.attachEvent('onclick', (function(i){
+             return function(){
+                   document.body.removeChild(i)}
+             })(newdiv));
+  }else{
+    lnk.onclick = (function(i){
+             return function(){
+                   document.body.removeChild(i)}
+             })(newdiv);
+  };
+  lnk.href = '#';
+  lnk.appendChild(document.createTextNode("remove"));
+  newdiv.appendChild(lnk);
+
+  document.body.appendChild(newdiv);
+};
+
+function strdate(d)
+{
+	var refreshTime = new Date()
+	if (d) refreshTime.setTime(d);
+	var yy = refreshTime.getFullYear();
+	var MM = refreshTime.getMonth()+1;
+	var dd = refreshTime.getDate();
+	var hh = refreshTime.getHours();
+	var mm = refreshTime.getMinutes();
+	var ss = refreshTime.getSeconds();
+	if (ss < 10 ) ss = "0"+ss;
+	if (mm < 10 ) mm = "0"+mm;
+	if (hh < 10 ) hh = "0"+hh;
+	if (dd < 10 ) dd = "0"+dd;
+	if (MM < 10 ) MM = "0"+MM;
+	return yy+'/'+MM+'/'+dd+' '+hh+':'+mm;
+
+}
+
+function strhora(d)
+{
+	var refreshTime = new Date()
+	if (d) refreshTime.setTime(d);
+	var yy = refreshTime.getFullYear();
+	var MM = refreshTime.getMonth()+1;
+	var dd = refreshTime.getDate();
+	var hh = refreshTime.getHours();
+	var mm = refreshTime.getMinutes();
+	var ss = refreshTime.getSeconds();
+	if (ss < 10 ) ss = "0"+ss;
+	if (mm < 10 ) mm = "0"+mm;
+	if (hh < 10 ) hh = "0"+hh;
+	if (dd < 10 ) dd = "0"+dd;
+	if (MM < 10 ) MM = "0"+MM;
+	return hh+':'+mm;
+}
+
+var myStatus = function()
+{
+	$.ajax({
+		url: "http://172.17.0.56/molinetes/ajax/waitevetnt.lua?event=molinetestatus",
+		cache: false,
+		async: true,
+		dataType: 'json',
+		success: function(info,status){
+//				alert(data);
+				var box = "#status_"+info.id;
+				
+				$("#name_"+info.id).html(info.name+" - "+strdate());
+				$("#type_"+info.id).html(info.type);
+				$("#start_"+info.id).html(strdate(info.start*1000));
+				var count = 0;
+				var cssObj = new Array({'background-color':'#0F8','color':'#000'},{'background-color':'#FF0','color':'#000'},{'background-color':'#FF0','color':'#000'},{'background-color':'#F00','color':'#FFF'});
+				for (evt in info.data) {
+					if (typeof info.data[evt] == "string" || typeof info.data[evt] == "number"){
+						$("#"+evt+"_"+info.id).html(info.data[evt]);
+					} else {
+						$("#"+evt+"_HORA_"+info.id).html(strhora(info.data[evt].hora*1000));
+						if (info.data[evt].msg != "OK") count++;
+						if (count>3) count=3;
+						$("#"+evt+"_MSG_"+info.id).html(info.data[evt].msg);
+						$("#"+evt+"_ERRORPERCENT_"+info.id).html(info.data[evt].errorpercent);
+						$("#"+evt+"_DETALLE_"+info.id).html(info.data[evt].detalle);
+					}
+				}
+				$("#name_"+info.id).css(cssObj[count]);
+
+			},
+		complete: function(data,status){
+				myStatus();
+			},
+		}
+	);
+}
+
+	$(document).ready(function () {
+/*
+		for (var i=1;i<9;i++){
+			$("#status_"+i).hover(function () {
+				$("#details_"+i).slideToggle(1000);
+			}, function () {
+				$("#details_"+i).slideToggle(1000);
+			});
+		}
+*/
+
+		$("#status_1").hover(function () {
+			$("#details_1").slideToggle(500);
+		}, function () {
+			$("#details_1").slideToggle(500);
+		});
+		$("#status_2").hover(function () {
+			$("#details_2").slideToggle(500);
+		}, function () {
+			$("#details_2").slideToggle(500);
+		});
+		$("#status_3").hover(function () {
+			$("#details_3").slideToggle(500);
+		}, function () {
+			$("#details_3").slideToggle(500);
+		});
+		$("#status_4").hover(function () {
+			$("#details_4").slideToggle(500);
+		}, function () {
+			$("#details_4").slideToggle(500);
+		});
+		$("#status_5").hover(function () {
+			$("#details_5").slideToggle(500);
+		}, function () {
+			$("#details_5").slideToggle(500);
+		});
+		$("#status_6").hover(function () {
+			$("#details_6").slideToggle(500);
+		}, function () {
+			$("#details_6").slideToggle(500);
+		});
+		$("#status_7").hover(function () {
+			$("#details_7").slideToggle(500);
+		}, function () {
+			$("#details_7").slideToggle(500);
+		});
+		$("#status_8").hover(function () {
+			$("#details_8").slideToggle(500);
+		}, function () {
+			$("#details_8").slideToggle(500);
+		});
+
+		myStatus();
+	});
+//	newES();
+//SetContainerSize ();
+</script>
+</body>
+</HTML>

@@ -1,0 +1,292 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <title>Referentes</title>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+	<meta  CONTENT="NO-CACHE" META HTTP-EQUIV="CACHE-CONTROL" />
+	<meta  http-equiv="expires" content="-1" />
+	<LINK REL="stylesheet" TYPE="text/css" HREF="themes/active/site.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/js/jq/grid/css/ui.jqgrid.css" />
+	<!--link rel="stylesheet" type="text/css" media="screen" href="/js/jq/jquery-ui-1.8.16.custom/css/ui-lightness/jquery-ui-1.8.16.custom.css" /-->
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/js/jq/jquery-ui-1.8.16.custom/css/redmond/jquery-ui-1.8.16.custom.css" />
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/js/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/lib/js/jquery-1.6.2.min.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/js/jq/jquery-ui-1.8.16.custom/js/jquery-ui-1.8.16.custom.min.js"></script>
+	<script src="/lib/js/jq/grid/js/i18n/grid.locale-es.js" type="text/javascript"></script>
+	<script src="/lib/js/jq/grid/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+	<!--SCRIPT SRC="/js/lib/screen.js" TYPE="text/javascript" ></SCRIPT-->
+<head>
+<body>
+	<DIV ID="container">
+		<DIV ID="header">
+		</DIV><!-- End header -->
+		<DIV ID="mainmenu">
+		</DIV><!-- End mainmenu -->
+		<DIV ID="content">
+			<div style="float:left">			
+				<div id="tabs" style="width: 100%; height:350px; background-color:#fff;">
+					<ul>
+						<li><a href="#referentes"><span>Referntes</span></a></li>
+						<li><a href="#mesas"><span>Totales SMS</span></a></li>
+						<li><a href="#mesasf1"><span>Totales F1</span></a></li>
+					</ul>
+					<div id="referentes" class="code" style="width:100%;height: 280px;">
+						<span>
+						<table id="reflist"></table> 
+						<div id="refpager"></div>
+						</span>
+					</div>
+					<div id="mesas" style="width:700px; height:280px;">
+						<span>
+						<table id="votlist"></table> 
+						<div id="votpager"></div>
+						</span>
+					</div>
+					<div id="mesasf1" style="width:700px; height:280px;">
+						<span>
+						<table id="votf1list"></table> 
+						<div id="votf1pager"></div>
+						</span>
+					</div>
+				</div>
+			</div>			
+		</DIV><!-- End content -->
+	</DIV><!-- End container -->
+<script>
+var idsmuni;
+var idsescu;
+	
+jQuery("#reflist").jqGrid(
+	{ 
+		url:'ajax/referentes.lua?q=2', 
+		datatype: "json", 
+		jsonReader : { 
+			root: "rows", 
+			page: "page", 
+			total: "total", 
+			records: "records", 
+			repeatitems: true, 
+			cell: "cell", 
+			id: "idpersona",
+			userdata: "userdata",
+			subgrid: { 
+				root:"rows", 
+				repeatitems: true, 
+				cell:"cell" 
+			} 
+		},
+		colNames:[
+			'Id',
+			'Nombres',
+			'Funcion',
+			'Telefono',
+			'Celular',
+			'e-Mail'
+			], 
+		colModel:[	
+			{name:'idpersona',hidden:true,index:'idpersona', width:'35px',editable:false},
+			{name:'apeynom',index:'apeynom', fixed:true, width:'200px',editable:false},
+			{name:'funcion',hidden:false,index:'funcion', width:'100px',editable:false},
+			{name:'telefono',index:'telefono', fixed:true, width:'95px',editable:false},
+			{name:'celular',index:'celular', fixed:true, width:'95px',editable:false},
+			{name:'email',hidden:false,index:'email', width:'120px',editable:false}
+		], 
+		rowNum:200,
+		sortname: 'idpersona', 
+		viewrecords: true, 
+		sortorder: "asc", 
+		caption: false,
+		width: 700,
+		height: 360
+	}); 
+//	jQuery("#reflis").jqGrid('navGrid','#refpager', {edit:false,add:false,del:false, view: true;});
+	jQuery("#reflist").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+	
+var lastselsms;
+jQuery("#votlist").jqGrid(
+	{ 
+		url:'ajax/smsvoto.lua?q=2', 
+		datatype: "json", 
+		jsonReader : { 
+			root: "rows", 
+			page: "page", 
+			total: "total", 
+			records: "records", 
+			repeatitems: true, 
+			cell: "cell", 
+			id: "idsmsvoto",
+			userdata: "userdata",
+			subgrid: { 
+				root:"rows", 
+				repeatitems: true, 
+				cell:"cell" 
+			} 
+		},
+		colNames:[
+			'Id',
+			'Departamento',
+			'Municipio',
+			'Escuela',
+			'Cir',
+			'L',
+			'Mesa',
+			'E',
+			'Total',
+			'Gob',
+			'Dip',
+			'Int',
+			'Con',
+			'Gob',
+			'Dip',
+			'Int',
+			'Con'
+		], 
+		colModel:[	
+			{name:'idsmsvoto',hidden:true,index:'idlista', width:'50px',align:"right",editable:false, edittype:"text",editrules:{required:true,edithidden:true}},
+			{name:'iddpto',hidden:true,index:'idlista', width:'50px',align:"right",editable:false, edittype:"text",editrules:{required:true,edithidden:true}},
+			{name:'idmuni',hidden:true,index:'idlista', width:'50px',align:"right",editable:false, edittype:"text",editrules:{required:true,edithidden:true}},
+			{name:'idescuela',hidden:true,index:'idlista', width:'50px',align:"right",editable:false, edittype:"text",editrules:{required:true,edithidden:true}},
+			{name:'idcircuito',hidden:true,index:'idlista', width:'50px',align:"right",editable:false, edittype:"text",editrules:{required:true,edithidden:true}},
+			{name:'idletra',hidden:true,index:'idlista', width:'50px',align:"right",editable:false, edittype:"text",editrules:{required:true,edithidden:true}},
+			{name:'mesa',hidden:false,index:'name', width:'50px',align:"left",editable:false, edittype:"text",editrules:{required:true,edithidden:true}},
+			{name:'electronica',hidden:false,index:'electronica', width:'50px',align:"left",editable:false, edittype:"text",editrules:{required:true,edithidden:true}},
+			{name:'Tot',hidden:false,index:'Tot', width:'50px',align:"left",editable:true, edittype:"text",editrules:{required:false,edithidden:true} },
+			{name:'f_gob',hidden:false,index:'name', width:'40px',align:"left",editable:true, edittype:"text",editrules:{required:false,edithidden:true}},
+			{name:'f_dip',hidden:false,index:'name', width:'40px',align:"left",editable:true, edittype:"text",editrules:{required:false,edithidden:true}},
+			{name:'f_int',hidden:false,index:'name', width:'40px',align:"left",editable:true, edittype:"text",editrules:{required:false,edithidden:true}},
+			{name:'f_con',hidden:false,index:'name', width:'40px',align:"left",editable:true, edittype:"text",editrules:{required:false,edithidden:true}},
+			{name:'a_gob',hidden:false,index:'name', width:'40px',align:"left",editable:true, edittype:"text",editrules:{required:false,edithidden:true}},
+			{name:'a_dip',hidden:false,index:'name', width:'40px',align:"left",editable:true, edittype:"text",editrules:{required:false,edithidden:true}},
+			{name:'a_int',hidden:false,index:'name', width:'40px',align:"left",editable:true, edittype:"text",editrules:{required:false,edithidden:true}},
+			{name:'a_con',hidden:false,index:'name', width:'40px',align:"left",editable:true, edittype:"text",editrules:{required:false,edithidden:true}}
+		],
+		onSelectRow: function(id){ 
+			if(id && id!==lastselsms)
+			{ 
+				jQuery('#votlist').jqGrid('restoreRow',lastselsms); 
+				jQuery('#votlist').jqGrid('editRow',id,true); 
+				lastselsms=id; 
+			} 
+		}, 
+		editurl: 'ajax/smsvoto.lua?q=2',
+		width:700,
+		rowNum:250,
+		sortname: 'mesa', 
+		viewrecords: true, 
+		sortorder: "asc", 
+		caption: false,
+		height: 360
+	});
+	jQuery("#votlist").jqGrid('navGrid','#votpager', {edit:true,add:false,del:false});
+	jQuery("#votlist").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+var lastselvoto;
+jQuery("#votf1list").jqGrid(
+	{ 
+		url:'ajax/totales.lua?q=2', 
+		editurl: 'ajax/totales.lua?q=2', 
+		datatype: "json", 
+		jsonReader : { 
+			root: "rows", 
+			page: "page", 
+			total: "total", 
+			records: "records", 
+			repeatitems: true, 
+			cell: "cell", 
+			id: "idcircuito",
+			userdata: "userdata",
+			subgrid: { 
+				root:"rows", 
+				repeatitems: true, 
+				cell:"cell" 
+			} 
+		},
+		colNames:[
+			'Cir',
+			'L',
+			'Mesa',
+			'Municipio',
+			'Departamento',
+			'Escuela',
+			'Votantes',
+			'E',
+			'Fecha',
+			'Lista',
+			'Presidente',
+			'Senador',
+			'DipNac',
+			'Gobernador',
+			'DipProv',
+			'Intendente',
+			'Concejal',
+			'Blanco',
+			'Nulo',
+			'Impugnado',
+			'Recurrido'
+			], 
+		colModel:[	
+			{name:'idcircuito'	,hidden:true, index:'idcircuito',	width:'50px',	align:"left",	editable:false, edittype:"text",	editrules:{required:true,	edithidden:true}},
+			{name:'letra'		,hidden:true, index:'letra', 		width:'40px',	align:"left",	editable:false, edittype:"text",	editrules:{required:true,	edithidden:true}},
+			{name:'mesa'		,hidden:true, index:'mesa',			width:'40px',	align:"left",	editable:false, edittype:"text",	editrules:{required:true,	edithidden:true}},
+			{name:'idmuni'		,hidden:false, index:'idmuni',		width:'40px',	align:"left",	editable:false, edittype:"text",	editrules:{required:true,	edithidden:true}},
+			{name:'iddpto'		,hidden:true, index:'iddpto', 		width:'40px',	align:"left",	editable:false, edittype:"text",	editrules:{required:true,	edithidden:true}},
+			{name:'idescuela'	,hidden:true, index:'idescuela', 	width:'40px',	align:"left",	editable:false, edittype:"text",	editrules:{required:true,	edithidden:true}},
+			{name:'votantes'	,hidden:true, index:'votantes', 	width:'40px',	align:"left",	editable:false, edittype:"text",	editrules:{required:false,	edithidden:true}},
+			{name:'electronica'	,hidden:true, index:'electronica', 	width:'40px',	align:"left",	editable:false, edittype:"text",	editrules:{required:false,	edithidden:true}},
+			{name:'fecha'		,hidden:true, index:'fecha', 		width:'40px',	align:"left",	editable:false, edittype:"text",	editrules:{required:false,	edithidden:false}},
+			{name:'lista'		,hidden:false,index:'lista', 		width:'40px',	align:"left",	editable:false, edittype:"text",	editrules:{required:true,	edithidden:true}},
+			{name:'presidente'	,hidden:true, index:'presidente', 	width:'40px',	align:"left",	editable:false, edittype:"text",	editrules:{required:false,	edithidden:true}},
+			{name:'senador'		,hidden:true, index:'senador',		width:'40px',	align:"left",	editable:false, edittype:"text",	editrules:{required:false,	edithidden:true}},
+			{name:'dipNac'		,hidden:true, index:'dipNac',		width:'40px',	align:"left",	editable:false, edittype:"text",	editrules:{required:false,	edithidden:true}},
+			{name:'gobernador'	,hidden:false,index:'gobernador',	width:'40px',	align:"left",	editable:true, 	edittype:"text",	editrules:{required:false,	edithidden:true}},
+			{name:'dipProv'		,hidden:false,index:'dipPorv',		width:'40px',	align:"left",	editable:true, 	edittype:"text",	editrules:{required:false,	edithidden:true}},
+			{name:'intendente'	,hidden:false,index:'intendent',	width:'40px',	align:"left",	editable:true, 	edittype:"text",	editrules:{required:false,	edithidden:true}},
+			{name:'concejal'	,hidden:false,index:'concejal',		width:'40px',	align:"left",	editable:true, 	edittype:"text",	editrules:{required:false,	edithidden:true}},
+			{name:'blanco'		,hidden:false,index:'blanco',		width:'40px',	align:"left",	editable:true, 	edittype:"text",	editrules:{required:false,	edithidden:true}},
+			{name:'nulo'		,hidden:false,index:'nulo', 		width:'40px',	align:"left",	editable:true, 	edittype:"text",	editrules:{required:false,	edithidden:true}},
+			{name:'impugnado'	,hidden:false,index:'impugnado',	width:'40px',	align:"left",	editable:true, 	edittype:"text",	editrules:{required:false,	edithidden:true}},
+			{name:'recurrido'	,hidden:false,index:'recurrido',	width:'40px',	align:"left",	editable:true, 	edittype:"text",	editrules:{required:false,	edithidden:true}}
+		], 
+		onSelectRow: function(id){ 
+			if(id && id!==lastselvoto)
+			{ 
+				jQuery('#votf1list').jqGrid('restoreRow',lastselvoto); 
+				jQuery('#votf1list').jqGrid('editRow',id,true); 
+				lastselvoto=id; 
+			} 
+		}, 
+		pager: '#votf1pager',
+		width:700,
+		rowNum:250,
+		sortname: 'mesa', 
+		viewrecords: true, 
+		sortorder: "asc", 
+		caption: false,
+		height: 330
+	}); 
+	jQuery("#votf1list").jqGrid('navGrid','#votf1pager', {edit:true,add:true,del:false});
+	jQuery("#votf1list").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+	
+$.ajax({
+	url: "/ajax/header.lua",
+	cache: false,
+	success: function(html){
+		$("#header").append(html);
+	}
+});
+	
+$.ajax({
+	url: "/ajax/menu.lua",
+	cache: false,
+	success: function(html){
+		$("#mainmenu").append(html);
+	}
+});
+ jQuery(document).ready(function() {        
+        $("#tabs").tabs();
+		jQuery("#tabs").css("height","470px");
+		jQuery("#tabs").css("width","100%");
+		jQuery("#tabs").css("margin-left","5px");
+    });
+</script>	
+</body>
+</HTML>

@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <title>Entradas/Salidas</title>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+	<meta  CONTENT="NO-CACHE" META HTTP-EQUIV="CACHE-CONTROL" />
+	<meta  http-equiv="expires" content="-1" />
+	<LINK REL="stylesheet" TYPE="text/css" HREF="themes/active/site.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/grid/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/css/themes/redmond/jquery-ui-1.8.16.custom.css" />
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/js/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/lib/js/jquery-1.6.4.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/i18n/grid.locale-es.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/jquery.jqGrid.min.js" ></script>
+<head>
+<body>
+		<DIV ID="content">
+			<table id="eslist"></table>
+			<div id="espager"></div>
+		</DIV><!-- End content -->
+<script>
+var newES = function ()
+{
+	var noCache = new Date();
+	var pepe = $.ajax({
+		url: "ajax/waitevetnt.lua?event=EntraSale&_noCache="+noCache.getTime(),
+		dataType: "json",
+		success: function(data,status,nose){
+			if (data != null){ 
+				$("#eslist").trigger("reloadGrid");
+				newES();
+			}
+		},
+		error: function(data, status, nose){
+			alert("ESTATUS:"+status+'\n'+"NoSE:"+nose);
+//			$("#smslist").trigger("reloadGrid");
+		},
+		complete: function(data, status, nose) {
+//			alert("ESTATUS:"+status+'\n'+"NoSE:"+nose+"\n"+data);
+//			newES();
+		}
+	});
+}
+
+/*
+var newES = $.ajax({
+		url: "ajax/waitevetnt.lua?event=EntraSale",
+		dataType: "json",
+		success: function(data,status,nose){
+			alert(status+"\n"+data);
+			if (data != null){ 
+				$("#eslist").trigger("reloadGrid");
+				newES();
+			}
+		},
+		error: function(data, status, nose){
+			alert("ESTATUS:"+status+'\n'+"NoSE:"+nose);
+//			$("#smslist").trigger("reloadGrid");
+		},
+		complete: function(data, status, nose) {
+			alert("ESTATUS:"+status+'\n'+"NoSE:"+nose);
+//			newES();
+		}
+	});
+*/
+var getIdValue = function (rowid, grid, field){
+	var ret = jQuery(grid).jqGrid('getRowData',rowid);
+	return ret[field];
+}
+
+/*
+var TpDocs = $.ajax({
+	url: 'ajax/tpdocselect.lua',
+	async: false,
+	success: function(data, result) {
+		if (!result) alert('Falló al leer los Tipos de Documentos.');
+	}
+	}).responseText;
+*/
+
+var ids;
+var eslastsel;
+jQuery("#eslist").jqGrid(
+	{
+		url:'ajax/es.lua?q=2',
+		datatype: "json",
+		jsonReader : {
+			root: "rows",
+			page: "page",
+			total: "total",
+			records: "records",
+			repeatitems: true,
+			cell: "cell",
+			id: "reg_id",
+			userdata: "userdata",
+			subgrid: {
+				root:"rows",
+				repeatitems: true,
+				cell:"cell"
+			}
+		},
+		colNames:[
+			'Id'
+			, 'Fecha/hora'
+			, 'Controlador'
+			, 'Registra'
+			, 'Tarjeta'
+			, 'Prs.Id'
+			, "Apellidos"
+			, "Nombres"
+			, 'Sexo'
+			, 'Organismo'
+			], 
+		colModel:[
+			  {name:'id',hidden:true,index:'id', width:'70px',editable:false, edittype:"text",editoptions:{ dataInit: function(element) { $(element).attr("readonly", "readonly"); }},editrules:{required:false,edithidden:true}}
+			, {name:'fecha',hidden:false,index:'fecha', width:'120px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'controler',hidden:false,index:'controler', width:'200px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'tpmov',hidden:false,index:'tpmov', width:'100px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'tarjeta',hidden:false,index:'tarjeta', width:'75px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'prsid',hidden:true,index:'prsid', width:'50px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'apellidos',hidden:false,index:'apellidos', width:'100px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'nombres',hidden:false,index:'nombres',width:'150px',editable:false, edittype:'text',editrules:{required:true,edithidden:true}}
+			, {name:'sexo',hidden:true,index:'sexo', width:'80px',editable:true,  edittype:"select",editoptions:{ value:"M:MASCULINO;F:FEMENINO"},editrules:{required:true,edithidden:true}}
+			, {name:'lugar',hidden:false,index:'lugar', width:'450px',editable:true, edittype:'text',editrules:{required:false,edithidden:true}}
+		],
+		rowNum:50,
+		rowList:[50,100,200],
+		pager: '#espager',
+		sortname: 'id',
+		viewrecords: true,
+		sortorder: "desc",
+		caption: "Entradas/Salidas",
+		editurl: "ajax/es.lua?q=2"
+	}); //.jqGrid('hideCol',["tpdoc","nrdoc","partido","sexo","nacio"]);
+//	jQuery("#eslist").jqGrid('navGrid','#espager',{add:false,edit:false,del:false});
+	jQuery("#eslist").jqGrid('navGrid','#espager',
+		{edit:false,add:true,del:false,view: true}, // options
+//		{}, // options
+		{
+			// edit options
+		},
+		{
+			// add options
+		},
+		{
+			// del options
+		},
+		{multipleSearch:false, multipleGroup:false, showQuery: false} // search option
+	);
+	jQuery("#eslist").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+	jQuery("#gbox_eslist").css("margin","auto");
+	$(window).bind('resize', function() {
+		var myWidth = $(window).width()-20;
+		var myHeight = $(window).height()-130;
+		$("#eslist").setGridWidth(myWidth,false);
+		$("#eslist").setGridHeight(myHeight);
+	}).trigger('resize');
+	newES();
+//SetContainerSize ();
+</script>
+</body>
+</HTML>

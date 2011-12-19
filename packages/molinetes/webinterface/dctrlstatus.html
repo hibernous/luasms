@@ -1,0 +1,293 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <title>Entradas/Salidas</title>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+	<meta  CONTENT="NO-CACHE" META HTTP-EQUIV="CACHE-CONTROL" />
+	<meta  http-equiv="expires" content="-1" />
+	<LINK REL="stylesheet" TYPE="text/css" HREF="themes/active/site.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/grid/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/css/themes/redmond/jquery-ui-1.8.16.custom.css" />
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/js/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/lib/js/jquery-1.6.4.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/i18n/grid.locale-es.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/jquery.jqGrid.min.js" ></script>
+<head>
+<body>
+		<DIV ID="content">
+			<table id="ctrlslist"></table>
+			<div id="ctrlspager"></div>
+			<table id="testlist"></table>
+			<div id="testpager"></div>
+			<div ID="log"></div>
+		</DIV><!-- End content -->
+<script>
+function strdate(d)
+{
+	var refreshTime = new Date()
+	if (d) refreshTime.setTime(d);
+	var yy = refreshTime.getFullYear();
+	var MM = refreshTime.getMonth()+1;
+	var dd = refreshTime.getDate();
+	var hh = refreshTime.getHours();
+	var mm = refreshTime.getMinutes();
+	var ss = refreshTime.getSeconds();
+	if (ss < 10 ) ss = "0"+ss;
+	if (mm < 10 ) mm = "0"+mm;
+	if (hh < 10 ) hh = "0"+hh;
+	if (dd < 10 ) dd = "0"+dd;
+	if (MM < 10 ) MM = "0"+MM;
+	return yy+'/'+MM+'/'+dd+' '+hh+':'+mm;
+
+}
+
+function strhora(d)
+{
+	var refreshTime = new Date()
+	if (d) refreshTime.setTime(d);
+	var yy = refreshTime.getFullYear();
+	var MM = refreshTime.getMonth()+1;
+	var dd = refreshTime.getDate();
+	var hh = refreshTime.getHours();
+	var mm = refreshTime.getMinutes();
+	var ss = refreshTime.getSeconds();
+	if (ss < 10 ) ss = "0"+ss;
+	if (mm < 10 ) mm = "0"+mm;
+	if (hh < 10 ) hh = "0"+hh;
+	if (dd < 10 ) dd = "0"+dd;
+	if (MM < 10 ) MM = "0"+MM;
+	return hh+':'+mm;
+}
+var ctrlsData = {};
+var startData = [];
+var myStatus = function()
+{
+	$.ajax({
+		url: "ajax/waitevetnt.lua?event=molinetestatus",
+		cache: false,
+		async: true,
+		dataType: 'json',
+		success: function(info,status)
+			{
+/*
+				alert(status+" "+info);
+				var box = "#status_"+info.id;
+				var ids = new Array();
+				ids.push(info.id);
+*/
+				if (!ctrlsData[info.id]){
+					ctrlsData[info.id] = info ;
+					$("#log").append("NewInfo: "+info.id+"<br>");
+				}else{
+					if (!ctrlsData[info.id].data){
+						ctrlsData[info.id].data = info.data;
+						$("#log").append(info.id+"- NewData <br>")
+					}else{
+						for (var varname in info.data){
+							if (!ctrlsData[info.id].data[varname])
+								$("#log").append(info.id+"- New Var "+varname+"<br>");
+							else
+								$("#log").append(info.id+"- Set Var "+varname+"<br>");
+							ctrlsData[info.id].data[varname] = info.data[varname];
+						}
+					}
+				}
+				var dataArray = new Array()
+				var i = info.id;
+				for (var i in ctrlsData){
+					var obj = {};
+					obj.id = i;
+					obj.start = ctrlsData[i].start;
+					for (var varname in ctrlsData[i].data)
+					{
+						if (typeof ctrlsData[i].data[varname] != "object"){
+							obj[varname] = ctrlsData[i].data[varname];
+//							alert(varname+"="+ctrlsData[i].data[varname]);
+						}
+					}
+					dataArray.push(obj);
+				}
+/*
+	para borrar la grilla y cargar las columnas de nuevo
+	$("#gridid").jqGrid('GridUnload');
+*/
+/*
+				for(var i=0;i<=dataArray.length;i++){
+					jQuery("#testlist").jqGrid('addRowData',i+1,dataArray[i]);
+				}
+				$("#testlist").trigger("reloadGrid");
+*/
+			},
+		complete: function(data,status)
+			{
+				myStatus();
+			},
+		}
+	);
+}
+jQuery("#ctrlslist").jqGrid(
+	{
+		url:'ajax/ctrl.lua?q=2',
+		datatype: "json",
+		jsonReader : {
+			root: "rows",
+			page: "page",
+			total: "total",
+			records: "records",
+			repeatitems: true,
+			cell: "cell",
+			id: "idctrl",
+			userdata: "userdata",
+			subgrid: {
+				root:"rows",
+				repeatitems: true,
+				cell:"cell"
+			}
+		},
+		colNames:[
+			'Idctrl'
+			, 'id'
+			, 'Descripcion'
+			, 'MAC-Address'
+			, 'IP'
+			, 'Activo'
+			, "Tipo"
+			, "Protocol"
+			, 'Puerto'
+			], 
+		colModel:[
+			  {name:'idctrl',hidden:false,index:'idctrl', width:'70px',editable:false, edittype:"text",editoptions:{ dataInit: function(element) { $(element).attr("readonly", "readonly"); }},editrules:{required:false,edithidden:true}}
+			, {name:'id',hidden:false,index:'id', width:'60px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'name',hidden:false,index:'name', width:'200px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'macaddrs',hidden:true,index:'macaddrss', width:'120px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'ip',hidden:false,index:'ip', width:'100px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'activo',hidden:false,index:'activo', width:'20px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'tipo',hidden:false,index:'tipo', width:'100px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'protocol',hidden:false,index:'protocol', width:'50px',editable:true, edittype:'select',editrules:{required:false,edithidden:true},editoptions: { size:40, value: "serial:SERIAL;tcp:TCP;udp:UDP"}}
+			, {name:'port',hidden:false,index:'port', width:'75px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+		],
+		subGrird: true,
+		subGridRowExpanded: function(subgrid_id, row_id) {
+			var subgrid_table_id, pager_id;
+			subgrid_table_id = subgrid_id+"_t";
+			pager_id = "p_"+subgrid_table_id;
+			var tmp = "<div>";
+			tmp 	+= "	<table id='"+subgrid_table_id+"' class='scroll'></table>";
+			tmp 	+= "	<div id='"+pager_id+"' class='scroll'></div>";
+			tmp 	+= "</div>";
+			$("#"+subgrid_id).html(tmp);
+			jQuery("#"+subgrid_table_id).jqGrid(
+			{
+				data: startData,
+				datatype: "local",
+				colNames:[
+					'Id'
+					, 'Inicio'
+					], 
+				colModel:[
+					{name:'id',hidden:false,index:'id', width:'60px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+					, {name:'start',hidden:false,index:'name', width:'200px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+				],
+				rowNum:50,
+				rowList:[50,100,200],
+				pager: '#'+pager_id,
+				sortname: 'name',
+				rownumbers: true,
+				rownumWidth: 40,
+				viewrecords: true,
+				subGrird: true,
+				sortorder: "desc",
+				caption: "Contrladores",
+				editurl: "ajax/ctrl.lua?q=2"
+			});
+			jQuery("#"+subgrid_table_id).jqGrid('navGrid','#'+pager_id,
+				{edit:false,add:true,del:false,view: true}, // options
+//				{}, // options
+				{
+					// edit options
+				},
+				{
+					// add options
+				},
+				{
+					// del options
+				},
+				{multipleSearch:false, multipleGroup:false, showQuery: false} // search option
+			);
+			jQuery("#"+subgrid_table_id).jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+		},
+		rowNum:50,
+		rowList:[50,100,200],
+		pager: '#ctrlspager',
+		sortname: 'name',
+//		rownumbers: true,
+		rownumWidth: 40,
+		viewrecords: true,
+		sortorder: "desc",
+		caption: "Contrladores",
+		editurl: "ajax/ctrl.lua?q=2"
+	});
+	jQuery("#ctrlslist").jqGrid('navGrid','#ctrlspager',
+		{edit:false,add:true,del:false,view: true}, // options
+//		{}, // options
+		{
+			// edit options
+		},
+		{
+			// add options
+		},
+		{
+			// del options
+		},
+		{multipleSearch:false, multipleGroup:false, showQuery: false} // search option
+	);
+	jQuery("#ctrlslist").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+
+/*
+jQuery("#testlist").jqGrid(
+	{
+		data: startData,
+		datatype: "local",
+		colNames:[
+			'Id'
+			, 'Inicio'
+			], 
+		colModel:[
+			  {name:'id',hidden:false,index:'id', width:'60px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'start',hidden:false,index:'name', width:'200px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+		],
+		rowNum:50,
+		rowList:[50,100,200],
+		pager: '#testpager',
+		sortname: 'name',
+		rownumbers: true,
+		rownumWidth: 40,
+		viewrecords: true,
+		subGrird: true,
+		sortorder: "desc",
+		caption: "Contrladores",
+		editurl: "ajax/ctrl.lua?q=2"
+	});
+	jQuery("#testlist").jqGrid('navGrid','#testpager',
+		{edit:false,add:true,del:false,view: true}, // options
+//		{}, // options
+		{
+			// edit options
+		},
+		{
+			// add options
+		},
+		{
+			// del options
+		},
+		{multipleSearch:false, multipleGroup:false, showQuery: false} // search option
+	);
+	jQuery("#testlist").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+*/
+	$(document).ready(function () {
+		myStatus();
+	});
+
+</script>
+</body>
+</HTML>

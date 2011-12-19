@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <title>Controladores</title>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+	<meta  CONTENT="NO-CACHE" META HTTP-EQUIV="CACHE-CONTROL" />
+	<meta  http-equiv="expires" content="-1" />
+	<LINK REL="stylesheet" TYPE="text/css" HREF="themes/active/site.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/grid/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/css/themes/redmond/jquery-ui-1.8.16.custom.css" />
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/js/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/lib/js/jquery-1.6.4.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/i18n/grid.locale-es.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/jquery.jqGrid.min.js" ></script>
+<head>
+<body>
+		<DIV ID="content">
+			<DIV ID='status'></DIV>
+			<table id="ctrlslist"></table>
+			<div id="ctrlspager"></div>
+		</DIV><!-- End content -->
+<script>
+var newES = function ()
+{
+	var noCache = new Date();
+	var pepe = $.ajax({
+		url: "ajax/waitevetnt.lua?event=ctrlstatus&_noCache="+noCache.getTime(),
+		dataType: "json",
+		success: function(data){
+			$("#ctrlslist").trigger("reloadGrid");
+		},
+		error: function(data, status, nose){
+			alert(status+'\n'+nose);
+//			$("#smslist").trigger("reloadGrid");
+		},
+		complete: function(data) {
+			newES();
+		}
+	});
+}
+
+
+var getIdValue = function (rowid, grid, field){
+	var ret = jQuery(grid).jqGrid('getRowData',rowid);
+	return ret[field];
+}
+
+jQuery("#ctrlslist").jqGrid(
+	{
+		url:'ajax/ctrl.lua?q=2',
+		datatype: "json",
+		jsonReader : {
+			root: "rows",
+			page: "page",
+			total: "total",
+			records: "records",
+			repeatitems: true,
+			cell: "cell",
+			id: "idctrl",
+			userdata: "userdata",
+			subgrid: {
+				root:"rows",
+				repeatitems: true,
+				cell:"cell"
+			}
+		},
+		colNames:[
+			'Idctrl'
+			, 'id'
+			, 'Descripcion'
+			, 'MAC-Address'
+			, 'IP'
+			, 'Activo'
+			, "Tipo"
+			, "Protocol"
+			, 'Puerto'
+			], 
+		colModel:[
+			  {name:'idctrl',hidden:false,index:'idctrl', width:'70px',editable:false, edittype:"text",editoptions:{ dataInit: function(element) { $(element).attr("readonly", "readonly"); }},editrules:{required:false,edithidden:true}}
+			, {name:'id',hidden:false,index:'id', width:'60px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'name',hidden:false,index:'name', width:'200px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'macaddrs',hidden:true,index:'macaddrss', width:'120px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'ip',hidden:false,index:'ip', width:'100px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'activo',hidden:false,index:'activo', width:'20px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'tipo',hidden:false,index:'tipo', width:'100px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'protocol',hidden:true,index:'protocol', width:'50px',editable:true, edittype:'select',editrules:{required:false,edithidden:true},editoptions: { size:40, value: "serial:SERIAL;tcp:TCP;udp:UDP"}}
+			, {name:'port',hidden:true,index:'port', width:'75px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+		],
+		rowNum:50,
+		rowList:[50,100,200],
+		pager: '#ctrlspager',
+		sortname: 'name',
+		rownumbers: true,
+		rownumWidth: 40,
+		viewrecords: true,
+		sortorder: "desc",
+		caption: "Contrladores",
+		editurl: "ajax/ctrl.lua?q=2"
+	});
+	jQuery("#ctrlslist").jqGrid('navGrid','#ctrlspager',
+		{edit:false,add:true,del:false,view: true}, // options
+//		{}, // options
+		{
+			// edit options
+		},
+		{
+			// add options
+		},
+		{
+			// del options
+		},
+		{multipleSearch:false, multipleGroup:false, showQuery: false} // search option
+	);
+	jQuery("#ctrlslist").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+	jQuery("#gbox_ctrlslist").css("margin","auto");
+	$(window).bind('resize', function() {
+		var myWidth = $(window).width()-20;
+		var myHeight = $(window).height()-130;
+		$("#ctrlslist").setGridWidth(myWidth,false);
+		$("#ctrlslist").setGridHeight(myHeight);
+	}).trigger('resize');
+//	newES();
+//SetContainerSize ();
+</script>
+</body>
+</HTML>

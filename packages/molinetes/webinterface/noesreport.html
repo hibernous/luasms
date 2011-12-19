@@ -1,0 +1,387 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//ES" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" >
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+	<meta http-equiv="expires" content="-1" />
+	<link rel = "stylesheet", type = "text/css", href = "/molinetes/themes/active/styles.css" />
+	<title>Molinetes Monitor</title>
+	<script type="text/javascript" src="/molinetes/js/prototype.js"></script>
+	<script type="text/javascript">
+
+	function showData(xhr)
+	{
+		$("search").disabled=false;
+		var response;
+		try {
+//			response = eval("(" + xhr.responseText + ")"); 
+			response = xhr.responseText.evalJSON();
+		} catch (err) { 
+			alert("Error en respuesta :"+err); 
+		}
+//		alert(response.numrows);
+		$("debug").update(response.sql);
+		
+		var es = ["Entra", "Sale", "Buzón³","Inv.(3)","Inv.(4)","Inv.(5)","Inv.(6)"];
+		$("numrows").update(response.numrows);
+		$("regs").update(response.regs);
+		$("page").update(response.page);
+		$("pages").update(response.pages);
+		var hc = $("headertable").rows[0].cells;
+		for ( var i=0; i<response.regs; i++)
+		{
+			var row = response.rows[i];
+			var r=$("datatable").insertRow(i);
+			if(i % 2 == 0){
+				r.className = "even";
+			}else{
+				r.className = "odd";
+			}      
+			r.style.className = "odd";
+			var fecha=r.insertCell(0);
+			fecha.style.width="150px";
+			fecha.appendChild(addData(row.reg_fecha));
+			var tpmov=r.insertCell(1);
+			tpmov.style.width='40px';
+			tpmov.appendChild(addData(es[row.reg_tpmov]));
+			var tarjeta=r.insertCell(2);
+			tarjeta.style.width='90px';
+			tarjeta.appendChild(addData(row.reg_tarjeta));
+			var persona=r.insertCell(3);
+			persona.style.width='50px';
+			persona.appendChild(addData(row.prs_id));
+			var prs_fullname=r.insertCell(4);
+			prs_fullname.style.width='240px';
+			prs_fullname.appendChild(addData(row.prs_fullname));
+			var cell = 5;
+			if ($("org_id").selectedIndex == 0 ){
+				var org_name=r.insertCell(cell);
+				org_name.style.width='180px';
+				org_name.appendChild(addData(row.org_name));
+				cell++
+			}
+			if ($("ofi_id").selectedIndex == 0){
+				var ofi_name=r.insertCell(cell);
+				ofi_name.style.width="280px";
+				ofi_name.appendChild(addData(row.ofi_name));
+			}
+		}
+		var mywidth = 0;
+		for (var i=0; i<$("headertable").rows[0].cells.length; i++)
+			mywidth += $("headertable").rows[0].cells[i].offsetWidth;
+		$("headertable").style.width=(mywidth)+'px';
+		scroleo();
+/*
+		var str = "<br>";
+		var r = $("datatable").rows[0].cells;
+		for (var i=0; i<hc.length; i++){
+			if (hc[i].clientWidth != r[i].clientWidth ){
+				hc[i].width=(hc[i].clientWidth-2) + 'px';
+				r[i].width=(hc[i].clientWidth-2) + 'px';
+			}
+			str+= i+" t1="+hc[i].clientWidth+" t2="+r[i].clientWidth+"<br>";
+		}
+		$("debug").innerHTML = $("debug").innerHTML+str;
+*/
+	};
+	
+	function  setparams ()
+	{
+		var param = new Object();
+		var myDate = new Date();
+		if ($("prs_fullname").value ) param.prs_fullname = $("prs_fullname").value;
+		if ($("prs_apellidos").value ) param.prs_apellidos = $("prs_apellidos").value;
+		if ($("prs_nombres").value ) param.prs_nombres = $("prs_nombres").value;
+		if ($("ofi_id").selectedIndex > 0 ) param.ofi_id = $("ofi_id").options[$("ofi_id").selectedIndex].value;
+		if ($("org_id").selectedIndex > 0 ) param.org_id = $("org_id").options[$("org_id").selectedIndex].value;
+		if ($("fchini").value ) param.fchini = $("fchini").value;
+		if ($("fchend").value ) param.fchend = $("fchend").value;
+		param._nocache = myDate.getTime();
+		return param;
+	};
+	function addData(str)
+	{
+		var el = document.createElement("div");
+		el.style.height="100%";
+		el.style.width="100%";
+		el.style.overflow="hidden";
+		el.style.textOverflow="ellipsis";
+		el.style.oTextOverflow="ellipsis";
+		el.style.whiteSspace="nowrap";
+		el.update(str);
+//		el.innerHTML=str;
+		return el;
+	};
+	
+	function cargarContenido(fuente_datos) {
+        var url = encodeURIComponent(fuente_datos);
+		$("debug").update("");
+		$("search").disabled=true;
+//		var c = $("datatable").createCaption();
+		var htb=$("headertable")
+		if (htb.rows.length == 0 ) {
+			var ht=htb.insertRow(0);
+			ht.style.className="grid_header_row";
+			var fecha=ht.insertCell(0);
+			fecha.style.width="150px";
+			fecha.appendChild(addData("Fecha/Hora"));
+			var tpmov=ht.insertCell(1);
+			tpmov.style.width="40px";
+			tpmov.appendChild(addData("Tipo"));
+			var tarjeta=ht.insertCell(2);
+			tarjeta.style.width="90px";
+			tarjeta.appendChild(addData("Tarjeta"));
+			var persona=ht.insertCell(3);
+			persona.style.width="50px";
+			persona.appendChild(addData("Id."));
+			var prs_fullname=ht.insertCell(4);
+			prs_fullname.style.width="240px";
+			prs_fullname.appendChild(addData("Apellidos y Nombres"));
+			var cell = 5;
+			if ($("org_id").selectedIndex == 0 ){
+				var org_name=ht.insertCell(cell);
+				org_name.style.width="180px";
+				org_name.appendChild(addData("Organismo"));
+				cell++;
+			}
+			if ($("ofi_id").selectedIndex == 0){
+				var ofi_name=ht.insertCell(cell);
+				ofi_name.style.width="280px";
+				ofi_name.appendChild(addData("Oficina"));
+				cell++;
+			}
+			var comp=ht.insertCell(cell);
+			comp.style.id="ht_comp";
+			comp.id="ht_comp";
+			comp.style.width="14px";
+//			comp.style.display="none";
+			comp.appendChild(addData("&nbsp;"));
+		}
+		
+		var mywidth = 0;
+		for (var i=0; i<htb.rows[0].cells.length; i++)
+			mywidth += htb.rows[0].cells[i].offsetWidth;
+		htb.style.width=(mywidth)+'px';
+		$("griddata").style.maxWidth=(htb.scrollWidth)+'px';
+		$("gridenca").style.maxWidth=(htb.scrollWidth)+'px';
+			
+/*
+		htb.style.width=(140+40+90+50+240+180+280+20)+'px';
+		$("datatable").style.width=(140+40+90+50+240+180+280)+'px';
+*/
+//		$("griddata").style.width=(140+40+90+50+260+180+280+16+4)+'px';
+//		$("gridmain").style.width=(140+40+90+50+260+180+280+16+4)+'px';
+//		c.innerHTML="Leyendo Datos";
+		while ($("datatable").rows.length > 0 )
+		{
+			$("datatable").deleteRow(0);
+		}
+		var param = setparams();
+		var options = {
+			method: "post",
+			encoding: "iso-8859-1",
+			asynchronous: true,
+			parameters: param,
+			onComplete: showData
+		};
+        new Ajax.Request(url, options);
+	}
+
+	function initSelOrganismos ()
+	{
+        var url = encodeURIComponent("lua/selectOrganismos.lua");
+		var myDate = new Date();
+		$("ofi_id").disabled=true;
+		var options = {
+			method: "post",
+			asynchronous: true,
+			parameters: {__nocache: myDate.getTime()},
+			onComplete: function (xhr)
+				{
+					var response;
+					try {
+						response = xhr.responseText.evalJSON();
+					} catch (err) { alert("Error en respuesta Organismos :"+err) };
+					for ( var i=0; i<response.regs; i++)
+					{
+						var option=document.createElement("option");
+						option.value = response.rows[i].idorganismo;
+						option.text = response.rows[i].name;
+						try
+						{
+							// for IE earlier than version 8
+							$("org_id").add(option,$("org_id").options[null]);
+						}
+						catch (e)
+						{
+							$("org_id").add(option,null);
+						}
+					}
+				}	
+		};
+        new Ajax.Request(url, options);
+	}
+
+	function cargaOficinas(id)
+	{
+        var url = encodeURIComponent("lua/selectOficinas.lua");
+		var myDate = new Date();
+		var options = {
+			method: "post",
+			asynchronous: true,
+			parameters: {
+				id: id, 
+				__nocache: myDate.getTime()
+			},
+			onComplete: function (xhr)
+				{
+					var response;
+					
+					try {
+						response = xhr.responseText.evalJSON();
+					} catch (err) { alert("Error en respuesta Organismos :"+err) };
+					$("ofi_id").selectedIndex = 0;
+					while ($("ofi_id").options.length > 1 ){
+						$("ofi_id").options.remove($("ofi_id").options.length-1)
+					}
+					for ( var i=0; i<response.regs; i++)
+					{
+						var option=document.createElement("option");
+						option.value = response.rows[i].idoficina;
+						option.text = response.rows[i].name;
+						try
+						{
+							// for IE earlier than version 8
+							$("ofi_id").add(option,$("ofi_id").options[null]);
+						}
+						catch (e)
+						{
+							$("ofi_id").add(option,null);
+						}
+					}
+				}	
+		};
+        new Ajax.Request(url, options);
+	}
+	function scroleo(el)
+	{
+		var myleft = $("griddata").scrollLeft;
+		var mydif = ($("gridenca").clientWidth-$("griddata").clientWidth);
+		if (mydif > 0){
+			$("ht_comp").style.width=(mydif-2)+'px';
+			$("ht_comp").style.display="block";
+		} else {
+			$("ht_comp").style.display="block";
+		}
+		$("gridenca").scrollLeft=myleft;
+//		alert(myleft+'\n'+$("gridenca").clientWidth+'\n'+$("griddata").clientWidth+'\n'+($("gridenca").clientWidth-$("griddata").clientWidth));
+	}
+	
+	function orgchange(obj)
+	{
+//		alert(obj.options[obj.selectedIndex].value);
+		$("ofi_id").selectedIndex = 0;
+		if (obj.selectedIndex == 0)
+			$("ofi_id").disabled=true;
+		else
+			$("ofi_id").disabled=false;
+		cargaOficinas(obj.options[obj.selectedIndex].value);
+	}
+	</script>
+</head>
+<body>
+<form id="algo" method="post">
+Fecha Inicial: <input id="fchini" type="text" name="fchini" />
+<select id="org_id" onChange="javascript:orgchange(this);"><option value="">Todos los Organismos</option></select><br />
+Fecha Final  : <input id="fchend" type="text" name="fchend" />
+<select id="ofi_id" ><option value="">Todas las Oficians</option></select><br />
+Full name : <input id="prs_fullname" type="text" name="prs_fullname" />
+Apellidos : <input id="prs_apellidos" type="text" name="prs_apellidos" />
+Nombres : <input id="prs_nombres" type="text" name="prs_nombres" />
+<input id="search" type="button" onclick="cargarContenido('lua/esnews.lua');" />
+</form>
+	<div style="width:100%;height:400px;position:relative;overflow:hidden;">
+		<div id="gridmain" style="width:100%;overfolw-x:auto;" >
+			<div id="gridenca" style="position:relative;left:0;top:0; overflow:hidden;width:100%;">
+				<table id="headertable" CLASS="grid_header">
+				</table>
+			</div>
+			<div id="griddata" style="height:350px;overflow-y:auto;" onscroll="scroleo(this);">
+				<table id="datatable" CLASS="grid" >
+				</table>
+			</div>
+		</div>
+		<div style="width:100%;height:24px;position:relative;left:0;bottom:0;border:1px solid blue;">
+			Showing:(<span id="regs" ></span>) regs of (<span id="numrows"></span>) Page:<span id="page"></span> of <span id="pages"></span>
+		</div>
+	</div>
+	<style>
+		html, body {
+			font-family:  Verdana, Helvetica, sans-serif;
+		}
+		table.grid, table.grid_header {
+			font-size: 80%;
+			width: 100%;
+			overflow: visible;
+			table-layout: fixed;
+			background-color: #ccc; 
+		}
+
+		.grid_header_row {
+		}
+
+		table.grid_header td {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			-o-text-overflow: ellipsis;
+			white-space: nowrap;
+			font-weight: bold;
+			background-color: #aaa ; 
+/*			border: 1px solid #000; */
+		}
+/*
+		table.grid {
+			font-size: 80%;
+			table-layout: fixed;
+			width: 100%;
+			background: #ccc; 
+		}
+*/
+/*
+		table.grid tr {
+		}
+*/
+		.odd {
+			background-color: #eee;
+		}
+		.even {
+			background-color: #fff;
+		}
+		
+		table.grid tr:hover {
+			color:#FFF;
+			background-color: #000077;
+			font-weight: bold;
+		}  /* mouse over link */
+		table.grid td {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			-o-text-overflow: ellipsis;
+			white-space: nowrap;
+/*			border: 1px solid #000; */
+		}
+	</style>
+	<script>
+		initSelOrganismos();
+		var currentDate = new Date();
+		var day = currentDate.getDate();
+		var month = currentDate.getMonth()+1;
+		if (month<10 ) month='0'+month;
+		if (day<10) day='0'+day;
+		var year = currentDate.getFullYear();
+		$("fchini").value = year+"-"+month+"-"+day;
+	</script>
+	<div id="debug"></div>
+	
+</body>
+</html>
