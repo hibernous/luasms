@@ -37,7 +37,7 @@ function strdate(d)
 	if (hh < 10 ) hh = "0"+hh;
 	if (dd < 10 ) dd = "0"+dd;
 	if (MM < 10 ) MM = "0"+MM;
-	return yy+'/'+MM+'/'+dd+' '+hh+':'+mm;
+	return yy+'-'+MM+'-'+dd+' '+hh+':'+mm;
 
 }
 
@@ -84,6 +84,9 @@ var setColors = function (id,info)
 				case 'salieron':
 					$("#sg3").jqGrid('setRowData', id, {salieron:data.salieron});
 					break;
+				case 'ultima':
+					$("#sg3").jqGrid('setRowData', id, {ultima:data.ultima});
+					break;
 			}
 		}
 	}
@@ -94,24 +97,28 @@ var setColors = function (id,info)
 			jQuery("#sg3").setCell (id,'hora','',{'background-color':'#00ff00'});
 			jQuery("#sg3").setCell (id,'entraron','',{'background-color':'#00ff00'});
 			jQuery("#sg3").setCell (id,'salieron','',{'background-color':'#00ff00'});
+			jQuery("#sg3").setCell (id,'ultima','',{'background-color':'#00ff00'});
 			break;
 		case 1:
 			jQuery("#sg3").setCell (id,'start','',{'background-color':'#ffff00'});
 			jQuery("#sg3").setCell (id,'hora','',{'background-color':'#ffff00'});
 			jQuery("#sg3").setCell (id,'entraron','',{'background-color':'#ffff00'});
 			jQuery("#sg3").setCell (id,'salieron','',{'background-color':'#ffff00'});
+			jQuery("#sg3").setCell (id,'ultima','',{'background-color':'#ffff00'});
 			break;
 		case 2:
 			jQuery("#sg3").setCell (id,'start','',{'background-color':'#ff8800'});
 			jQuery("#sg3").setCell (id,'hora','',{'background-color':'#ff8800'});
 			jQuery("#sg3").setCell (id,'entraron','',{'background-color':'#ff8800'});
 			jQuery("#sg3").setCell (id,'salieron','',{'background-color':'#ff8800'});
+			jQuery("#sg3").setCell (id,'ultima','',{'background-color':'#ff8800'});
 			break;
 		default:
 			jQuery("#sg3").setCell (id,'start','',{'background-color':'#ff0000'});
 			jQuery("#sg3").setCell (id,'hora','',{'background-color':'#ff0000'});
 			jQuery("#sg3").setCell (id,'entraron','',{'background-color':'#ff0000'});
 			jQuery("#sg3").setCell (id,'salieron','',{'background-color':'#ff0000'});
+			jQuery("#sg3").setCell (id,'ultima','',{'background-color':'#ff0000'});
 			break;
 	};
 //	}
@@ -194,11 +201,11 @@ jQuery("#sg3").jqGrid({
 			, {name:'tipo',hidden:true,index:'tipo', width:'100px',editable:true,  edittype:"text",editrules:{required:true,edithidden:true}}
 			, {name:'protocol',hidden:true,index:'protocol', width:'50px',editable:true, edittype:'select',editrules:{required:false,edithidden:true},editoptions: { size:40, value: "serial:SERIAL;tcp:TCP;udp:UDP"}}
 			, {name:'port',hidden:true,index:'port', width:'75px',editable:true,  edittype:"text",editrules:{required:true,edithidden:true}}
-			, {name:'start',hidden:false,index:'start', width:'130px',align:"right",editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
-			, {name:'hora',hidden:false,index:'hora', width:'130px',align:"right",editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'start',hidden:false,index:'start', width:'120px',align:"right",editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'hora',hidden:false,index:'hora', width:'120px',align:"right",editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
 			, {name:'entraron',hidden:false,index:'entraron', width:'50px',align:"right",editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
 			, {name:'salieron',hidden:false,index:'salieron', width:'50px',align:"right",editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
-			, {name:'ultima',hidden:false,index:'ultima', width:'50px',align:"right",editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'ultima',hidden:false,index:'ultima', width:'120px',align:"right",editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
 		],
    	rowNum:20,
    	rowList:[10,20,30],
