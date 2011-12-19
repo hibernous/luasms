@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <title>Status</title>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+	<meta  CONTENT="NO-CACHE" META HTTP-EQUIV="CACHE-CONTROL" />
+	<meta  http-equiv="expires" content="-1" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/grid/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/css/themes/redmond/jquery-ui-1.8.16.custom.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/js/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/lib/js/jquery-1.6.4.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/i18n/grid.locale-es.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/jquery.jqGrid.min.js" ></script>
+<head>
+<body>
+		<DIV ID="content">
+			<table id="peers_list"></table>
+			<div id="peers_pager"></div>
+		</DIV><!-- End content -->
+<script>
+
+var getIdValue = function (rowid, grid, field){
+	var ret = jQuery(grid).jqGrid('getRowData',rowid);
+	return ret[field];
+}
+var peerData = 
+[
+/*
+{"ChannelType":"SIP"
+,"Peer":"SIP\/RmtTerm02"
+,"Address":"172.31.1.104:5060"
+,"PeerStatus":"Registered"
+,"Event":"PeerStatus"
+,"Privilege":"system,all"
+}
+*/
+
+		{ Peer:"RmtTerm02"
+		, ChannelType:"SIP"
+		, Address:"172.31.1.104:5060"
+		, PeerStatus:"Registered"
+		}
+		,{ Peer: "RmtTerm01"
+		, ChannelType:"SIP"
+		, Address:"172.31.1.104:5060"
+		, PeerStatus:"Registered"
+		}
+]; 
+
+var newData = function (data, textStatus, jqXHR)
+{
+	jQuery("#peers_list").jqGrid('addRowData',1,data,'first');
+	getData();
+}
+
+var getData = function()
+{
+	$.ajax({
+		url: "ajax/astwait.lua?waitEvt=PeerStatus",
+		cache:false,
+		dataType: 'json',
+		success: newData
+	});
+};
+jQuery("#peers_list").jqGrid(
+	{
+		datatype: "local",
+		colNames:[
+			'Peer'
+			, 'Protocol'
+			, 'Address'
+			, 'Status'
+			], 
+		colModel:[
+			  {name:'Peer',hidden:false,index:'Peer',editable:false}
+			, {name:'ChannelType',hidden:false,index:'ChannelType',editable:false}
+			, {name:'Address',hidden:false,width:'200px',index:'Address',editable:false}
+			, {name:'PeerStatus',hidden:false,width:'100px',index:'PeerStatus',editable:false}
+		],
+		rowNum:50,
+		rowList:[20,40,100],
+		pager: '#peers_pager',
+		sortname: 'id',
+		viewrecords: true,
+		sortorder: "desc",
+		caption: "Peers Status",
+	}); //.jqGrid('hideCol',["tpdoc","nrdoc","partido","sexo","nacio"]);
+//	jQuery("#peers_list").jqGrid('navGrid','#peers_pager',{add:false,edit:false,del:false});
+	jQuery("#peers_list").jqGrid('navGrid','#peers_pager',
+		{edit:false,add:false,del:false,view: true}, // options
+//		{}, // options
+		{
+			// edit options
+		},
+		{
+			// add options
+		},
+		{
+			// del options
+		},
+		{multipleSearch:false, multipleGroup:false, showQuery: false} // search option
+	);
+	jQuery("#peers_list").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+for(var i=0;i<=peerData.length;i++)
+	jQuery("#peers_list").jqGrid('addRowData',i+1,peerData[i]);
+getData();
+
+//SetContainerSize ();
+</script>
+</body>
+</HTML>

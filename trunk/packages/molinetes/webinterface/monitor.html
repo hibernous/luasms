@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//ES" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" >
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+	<meta http-equiv="expires" content="-1" />
+	<link rel = "stylesheet", type = "text/css", href = "/molinetes/themes/active/styles.css" />
+	<title>Molinetes Monitor</title>
+	<script type="text/javascript" src="/molinetes/js/prototype.js"></script>
+	<script type="text/javascript">
+
+	function showData(xhr)
+	{
+		var response;
+//		try {
+			response = xhr.responseText.evalJSON();
+//			response.query = unescape(response.query);
+//			if (!Object.isArray(response.data)) { response.data = []; }
+//		} catch (err) { alert("Coso:"+err) }
+//		var newdiv = document.createElement("div");
+//		newdiv.setAttribite("id",response.tarjeta);
+//		newdiv.innerHTML = response.name+"<br><img src='lua/foto.lua?foto="+response.persona+"' />";
+//		$("contenedor").appendChild(newdiv);
+		cargarContenido('lua/monitor.lua');
+		if (response) {
+			if (response.type == "Error"){
+				alert(response.msg);
+			} else {
+			var r=$("contenedor").insertRow(0);
+			var x=r.insertCell(0).update(response.strFecha+" "+" "+response.lectorname);
+			x.style.width="20%";
+			x.style.minWidth="200px";
+/*
+			x.style.width="200px";
+			x.style.whiteSpace="nowrap";
+			x.style.overflow="hidden";
+			x.style.textOverflow="ellipsis";
+			x.style.minWidth="100px";
+*/
+			var y=r.insertCell(1).update(response.name);
+			y.style.width="20%";
+			y.style.minWidth="200px";
+/*
+			y.style.width="20%";
+			y.style.whiteSpace="nowrap";
+			y.style.overflow="hidden";
+			y.style.textOverflow="ellipsis";
+			y.style.minWidth="150px";
+*/
+			var z=r.insertCell(2).update(response.molineteId+" - "+response.OrgName+" - "+response.OfName);
+			z.style.width="59%";
+			z.style.minWidth="200px";
+/*
+			z.style.whiteSpace="nowrap";
+			z.style.overflow="hidden";
+			z.style.textOverflow="ellipsis";
+			z.style.minWidth="200px";
+*/
+			}
+		} else {
+			alert("No response");
+		}
+	}
+
+	var errorValues = function (parentId, id, value)
+	{
+		var linea = new Element("div", { 
+				id: parentId+"_"+id,
+				}).update(id+": "+value);
+		linea.style.border='1px solid red';
+		linea.style.styleFloat='left';
+		linea.style.cssFloat='left';
+		return linea;
+	}
+
+	function showStatus(xhr)
+	{
+		var response;
+		response = xhr.responseText.evalJSON();
+		cargarStatus('lua/molinetestatus.lua');
+		if (response) {
+//			$("debug").innerHTML = response.serie+"<BR />"+$("debug").innerHTML;
+			var myObj = document.getElementById(response.serie);
+			if (myObj){
+//				$("debug").innerHTML = "Por Si"+"<BR />"+$("debug").innerHTML;
+
+				$(response.serie+"_A").update("A: "+response.fail.A);
+				$(response.serie+"_B").update("B: "+response.fail.B);
+				$(response.serie+"_XB").update("XB: "+response.fail.XB);
+				$(response.serie+"_XS").update("XS: "+response.fail.XS);
+				$(response.serie+"_XK").update("XK: "+response.fail.XK);
+				$(response.serie+"_CM").update("CM: "+response.fail.CM);
+			} else {
+				$("debug").innerHTML = "Por No"+"<BR />"+$("debug").innerHTML;
+				var info = new Element("div", {
+					id: response.serie,
+					'class': 'molineteInfo'
+					});
+				info.style.width = '100%';
+				info.style.border='1px solid blue';
+				info.style.height='20px'
+				var linea = new Element("div", { 
+									id: response.serie+"_name"
+									}).update(response.name);
+				linea.style.border='1px solid red';
+				linea.style.styleFloat='left';
+				linea.style.cssFloat='left';
+				info.appendChild(linea);
+
+				info.appendChild(errorValues(response.serie,"A",response.fail.A));
+				info.appendChild(errorValues(response.serie,"B",response.fail.B));
+				info.appendChild(errorValues(response.serie,"XB",response.fail.XB));
+				info.appendChild(errorValues(response.serie,"XS",response.fail.XS));
+				info.appendChild(errorValues(response.serie,"XK",response.fail.XK));
+				info.appendChild(errorValues(response.serie,"CM",response.fail.CM));
+
+				$("molinetes").appendChild(info);
+			}
+		} else {
+			alert("No response");
+		}
+	}
+	
+	function cargarContenido(fuente_datos) {
+        var url = encodeURIComponent(fuente_datos);
+		var myDate = new Date();
+        new Ajax.Request(url, {
+			method: 'get', 
+			encoding: 'UTF-8',
+			parameters: {
+				fecha: myDate.getTime(),
+				tipo: 'personas'
+			},
+			asynchronous: true,
+			onComplete: showData
+		});
+	}
+
+	function cargarStatus(fuente_datos) {
+        var url = encodeURIComponent(fuente_datos);
+		var myDate = new Date();
+        new Ajax.Request(url, {
+			method: 'get', 
+			encoding: 'UTF-8',
+			parameters: {
+				fecha: myDate.getTime(),
+				tipo: 'personas'
+			},
+			asynchronous: true,
+			onComplete: showStatus
+		});
+	}
+	</script>
+</head>
+<body>
+	<div id="debug" style="witdh:100%; height:150px;border:1px solid black; overflow-x: hidden; overflow-y:scroll">
+	</div>
+	<div id="molinetes" style="witdh:100%; height:180px;border:1px solid black; overflow-x: hidden; overflow-y:scroll">
+	</div>
+	<div style="width:100%;height:320px;overflow-y:auto;">
+	<table id="contenedor" style="width:100%;" border=1>
+	</table>
+	</div>
+	<style>
+		#contenedor{
+			table-layout: fixed; 
+		}
+
+		#contenedor td{
+			overflow: hidden;
+			text-overflow: ellipsis;
+			-o-text-overflow: ellipsis;
+			white-space: nowrap;
+		}  
+	</style>
+	<script>
+		cargarContenido('lua/monitor.lua');
+		cargarStatus('lua/molinetestatus.lua');
+	</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <title>Personas</title>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+	<meta  CONTENT="NO-CACHE" META HTTP-EQUIV="CACHE-CONTROL" />
+	<meta  http-equiv="expires" content="-1" />
+	<LINK REL="stylesheet" TYPE="text/css" HREF="themes/active/site.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/grid/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/css/themes/redmond/jquery-ui-1.8.16.custom.css" />
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/js/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/lib/js/jquery-1.6.4.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/i18n/grid.locale-es.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/jquery.jqGrid.min.js" ></script>
+<head>
+<body>
+		<DIV ID="content">
+			<table id="prslist"></table>
+			<div id="prspager"></div>
+		</DIV><!-- End content -->
+<script>
+
+var getIdValue = function (rowid, grid, field){
+	var ret = jQuery(grid).jqGrid('getRowData',rowid);
+	return ret[field];
+}
+
+var TpDocs = $.ajax({
+	url: 'ajax/tpdocselect.lua',
+	async: false,
+	success: function(data, result) {
+		if (!result) alert('Falló al leer los Tipos de Documentos.');
+	}
+	}).responseText;
+
+
+var ids;
+var prslastsel;
+jQuery("#prslist").jqGrid(
+	{
+		url:'ajax/personas.lua?q=2',
+		datatype: "json",
+		jsonReader : {
+			root: "rows",
+			page: "page",
+			total: "total",
+			records: "records",
+			repeatitems: true,
+			cell: "cell",
+			id: "id",
+			userdata: "userdata",
+			subgrid: {
+				root:"rows",
+				repeatitems: true,
+				cell:"cell"
+			}
+		},
+		colNames:[
+			'Id'
+			, 'Apellidos'
+			, "Nombres"
+			, 'Sexo'
+			, 'Nacio'
+			, 'TpDoc'
+			, 'Nr.Doc'
+			], 
+		colModel:[
+			  {name:'id',hidden:true,index:'id', width:'70px',editable:false, edittype:"text",editoptions:{ dataInit: function(element) { $(element).attr("readonly", "readonly"); }},editrules:{required:false,edithidden:true}}
+			, {name:'apellidos',hidden:false,index:'apellidos', width:'200px',editable:false,  edittype:"test",editrules:{required:true,edithidden:true}}
+			, {name:'nombres',hidden:false,index:'nombres',width:'200px',editable:false, edittype:'text',editrules:{required:true,edithidden:true}}
+			, {name:'sexo',hidden:false,index:'sexo', width:'80px',editable:true,  edittype:"select",editoptions:{ value:"M:MASCULINO;F:FEMENINO"},editrules:{required:true,edithidden:true}}
+			, {name:'nacio',hidden:false,index:'nacio', width:'100px',editable:true, edittype:'text',editrules:{required:false,edithidden:true}}
+			, {name:'tpdoc',hidden:false,index:'tpdoc', width:'100px',editable:true, edittype:'select',editrules:{required:false,edithidden:true},editoptions: { size:40, value: TpDocs}}
+/*
+			, {name:'tpdoc',
+				hidden:false,
+				index:'tpdoc', 
+				width:'100px',
+				editable:true,
+				edittype:'select',
+				editrules:{required:false,edithidden:true},
+				editoptions:{ size:40, value:TpDocs,
+					dataEvents: [
+						{	type: 'blur',
+							fn: function(e) {
+								$padre = $(this).parent().parent().parent().parent().parent(); 								
+								var $url = 'ajax/tpdocselect.lua?name='+$padre.find("#tpdoc").val();
+//								var $url = 'ajax/tpdocselect.lua?q=2';
+								var option = $.ajax({
+									url: $url,
+									async: false,
+									success: function(data, result) {
+										if (!result) alert('Error al buscar Tipo de Documento.');
+									}
+								}).responseText;
+								$padre.find("#id").html(option);
+							}
+						}
+					]
+				}
+			}
+*/
+			, {name:'nrodoc',hidden:false,index:'nrodoc', width:'100px',editable:false, edittype:'text',editrules:{required:false,edithidden:true}}
+		],
+		rowNum:50,
+		rowList:[50,100,150],
+		pager: '#prspager',
+		sortname: 'apellidos',
+		viewrecords: true,
+		sortorder: "asc",
+		caption: "Personas",
+		editurl: "ajax/personas.lua?q=2"
+	}); //.jqGrid('hideCol',["tpdoc","nrdoc","partido","sexo","nacio"]);
+//	jQuery("#prslist").jqGrid('navGrid','#prspager',{add:false,edit:false,del:false});
+	jQuery("#prslist").jqGrid('navGrid','#prspager',
+		{edit:false,add:true,del:false,view: true}, // options
+//		{}, // options
+		{
+			// edit options
+		},
+		{
+			// add options
+		},
+		{
+			// del options
+		},
+		{multipleSearch:false, multipleGroup:false, showQuery: false} // search option
+	);
+	jQuery("#prslist").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+	jQuery("#gbox_prslist").css("margin","auto");
+	$(window).bind('resize', function() {
+		var myWidth = $(window).width()-20;
+		var myHeight = $(window).height()-130;
+		$("#prslist").setGridWidth(myWidth,false);
+		$("#prslist").setGridHeight(myHeight);
+	}).trigger('resize');
+
+//SetContainerSize ();
+</script>
+</body>
+</HTML>

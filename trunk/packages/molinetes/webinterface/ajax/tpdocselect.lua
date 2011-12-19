@@ -1,0 +1,1 @@
+require("lua.ajaxresponse")dbtable = "tpdoc"dbsel = "id, name"conMy, serr = mysql:connect( "molinetes", "root", "pirulo", "10.10.8.6" )resp = {}resp.partidos = {}local sql = string.format("SELECT %s FROM %s ORDER BY name",dbsel, dbtable)local cur, serr = doSQL(conMy,sql)resp = buildSelect(cur)--ajax_responce(json.encode(resp))ajax_responce(resp)

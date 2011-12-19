@@ -1,0 +1,332 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <title>Entradas/Salidas</title>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+	<meta  CONTENT="NO-CACHE" META HTTP-EQUIV="CACHE-CONTROL" />
+	<meta  http-equiv="expires" content="-1" />
+	<LINK REL="stylesheet" TYPE="text/css" HREF="themes/active/site.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/grid/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/css/themes/redmond/jquery-ui-1.8.16.custom.css" />
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/js/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/lib/js/jquery-1.6.4.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/i18n/grid.locale-es.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/jquery.jqGrid.min.js" ></script>
+<head>
+<body>
+		<DIV ID="content">
+			<table id="sg3"></table>
+			<div id="psg3"></div>
+		</DIV><!-- End content -->
+<script>
+var ctrlsData = {};
+var startData = [];
+var totalData = {};
+function strdate(d)
+{
+	var refreshTime = new Date()
+	if (d) refreshTime.setTime(d);
+	var yy = refreshTime.getFullYear();
+	var MM = refreshTime.getMonth()+1;
+	var dd = refreshTime.getDate();
+	var hh = refreshTime.getHours();
+	var mm = refreshTime.getMinutes();
+	var ss = refreshTime.getSeconds();
+	if (ss < 10 ) ss = "0"+ss;
+	if (mm < 10 ) mm = "0"+mm;
+	if (hh < 10 ) hh = "0"+hh;
+	if (dd < 10 ) dd = "0"+dd;
+	if (MM < 10 ) MM = "0"+MM;
+	return yy+'/'+MM+'/'+dd+' '+hh+':'+mm;
+
+}
+
+function strhora(d)
+{
+	var refreshTime = new Date()
+	if (d) refreshTime.setTime(d);
+	var yy = refreshTime.getFullYear();
+	var MM = refreshTime.getMonth()+1;
+	var dd = refreshTime.getDate();
+	var hh = refreshTime.getHours();
+	var mm = refreshTime.getMinutes();
+	var ss = refreshTime.getSeconds();
+	if (ss < 10 ) ss = "0"+ss;
+	if (mm < 10 ) mm = "0"+mm;
+	if (hh < 10 ) hh = "0"+hh;
+	if (dd < 10 ) dd = "0"+dd;
+	if (MM < 10 ) MM = "0"+MM;
+	return hh+':'+mm;
+}
+
+var setColors = function (id,info)
+{
+	var eventgrid, eventpager;
+	eventgrid = "sg3_events_"+id;
+	eventpager = eventgrid+"_pager";
+	var data = info.data
+	var count = 0;
+	if (info.start) $("#sg3").jqGrid('setRowData', id, {start:strdate(info.start*1000)});
+	for (var varname in data){
+		if (typeof data[varname] == "object"){
+			if (data[varname].msg != 'OK') count++;
+			$("#"+eventgrid).jqGrid('setRowData', varname, data[varname])
+			$("#"+eventgrid).jqGrid('setRowData', varname, {hora:strdate(data[varname])})
+		}else{
+			switch (varname)
+			{
+				case 'hora':
+					$("#sg3").jqGrid('setRowData', id, {hora:data.hora});
+					break;
+				case 'entraron':
+					$("#sg3").jqGrid('setRowData', id, {entraron:data.entraron});
+					break;
+				case 'salieron':
+					$("#sg3").jqGrid('setRowData', id, {salieron:data.salieron});
+					break;
+			}
+		}
+	}
+	switch (count)
+	{
+		case 0:
+			jQuery("#sg3").setCell (id,'start','',{'background-color':'#00ff00'});
+			jQuery("#sg3").setCell (id,'hora','',{'background-color':'#00ff00'});
+			jQuery("#sg3").setCell (id,'entraron','',{'background-color':'#00ff00'});
+			jQuery("#sg3").setCell (id,'salieron','',{'background-color':'#00ff00'});
+			break;
+		case 1:
+			jQuery("#sg3").setCell (id,'start','',{'background-color':'#ffff00'});
+			jQuery("#sg3").setCell (id,'hora','',{'background-color':'#ffff00'});
+			jQuery("#sg3").setCell (id,'entraron','',{'background-color':'#ffff00'});
+			jQuery("#sg3").setCell (id,'salieron','',{'background-color':'#ffff00'});
+			break;
+		case 2:
+			jQuery("#sg3").setCell (id,'start','',{'background-color':'#ff8800'});
+			jQuery("#sg3").setCell (id,'hora','',{'background-color':'#ff8800'});
+			jQuery("#sg3").setCell (id,'entraron','',{'background-color':'#ff8800'});
+			jQuery("#sg3").setCell (id,'salieron','',{'background-color':'#ff8800'});
+			break;
+		default:
+			jQuery("#sg3").setCell (id,'start','',{'background-color':'#ff0000'});
+			jQuery("#sg3").setCell (id,'hora','',{'background-color':'#ff0000'});
+			jQuery("#sg3").setCell (id,'entraron','',{'background-color':'#ff0000'});
+			jQuery("#sg3").setCell (id,'salieron','',{'background-color':'#ff0000'});
+			break;
+	};
+//	}
+}
+			
+var myStatus = function()
+{
+	$.ajax({
+		url: "ajax/waitevetnt.lua?event=molinetestatus",
+		cache: false,
+		async: true,
+		dataType: 'json',
+		success: function(info,status)
+			{
+				if (!ctrlsData[info.id]){
+					ctrlsData[info.id] = info ;
+				}else{
+					if (!ctrlsData[info.id].data){
+						ctrlsData[info.id].data = info.data;
+						for (var varname in info.data){
+							ctrlsData[info.id].data[varname] = info.data[varname];
+						}
+					}else{
+						for (var varname in info.data){
+							ctrlsData[info.id].data[varname] = info.data[varname];
+						}
+					}
+				}
+				setColors(info.id, ctrlsData[info.id]);
+				myStatus();
+			},
+		complete: function(info,status)
+			{
+			},
+		}
+	);
+};
+
+jQuery("#sg3").jqGrid({
+		url:'ajax/ctrl.lua?q=2',
+		datatype: "json",
+		jsonReader : {
+			root: "rows",
+			page: "page",
+			total: "total",
+			records: "records",
+			repeatitems: true,
+			cell: "cell",
+			id: "idctrl",
+			userdata: "userdata",
+			subgrid: {
+				root:"rows",
+				repeatitems: true,
+				cell:"cell"
+			}
+		},
+		colNames:[
+			'Idctrl'
+			, 'id'
+			, 'Descripcion'
+			, 'MAC-Address'
+			, 'IP'
+			, 'Activo'
+			, "Tipo"
+			, "Protocol"
+			, 'Puerto'
+			, 'Inicio'
+			, 'Hora'
+			, 'Entraron'
+			, 'Salieron'
+			, 'Ultima'
+			], 
+		colModel:[
+			  {name:'idctrl',hidden:false,index:'idctrl', width:'70px',editable:false, edittype:"text",editoptions:{ dataInit: function(element) { $(element).attr("readonly", "readonly"); }},editrules:{required:false,edithidden:true}}
+			, {name:'id',hidden:false,index:'id', width:'60px',editable:true,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'name',hidden:false,index:'name', width:'200px',editable:true,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'macaddrs',hidden:true,index:'macaddrss', width:'120px',editable:true,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'ip',hidden:true,index:'ip', width:'100px',editable:true,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'activo',hidden:true,index:'activo', width:'20px',editable:true,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'tipo',hidden:true,index:'tipo', width:'100px',editable:true,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'protocol',hidden:true,index:'protocol', width:'50px',editable:true, edittype:'select',editrules:{required:false,edithidden:true},editoptions: { size:40, value: "serial:SERIAL;tcp:TCP;udp:UDP"}}
+			, {name:'port',hidden:true,index:'port', width:'75px',editable:true,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'start',hidden:false,index:'start', width:'130px',align:"right",editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'hora',hidden:false,index:'hora', width:'130px',align:"right",editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'entraron',hidden:false,index:'entraron', width:'50px',align:"right",editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'salieron',hidden:false,index:'salieron', width:'50px',align:"right",editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'ultima',hidden:false,index:'ultima', width:'50px',align:"right",editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+		],
+   	rowNum:20,
+   	rowList:[10,20,30],
+   	pager: '#psg3',
+   	sortname: 'idctrl',
+    viewrecords: true,
+    sortorder: "asc",
+	multiselect: false,
+	subGrid: true,
+	caption: "Custom Icons in Subgrid",
+	// define the icons in subgrid
+    subGridOptions: {
+        "plusicon"  : "ui-icon-triangle-1-e",
+        "minusicon" : "ui-icon-triangle-1-s",
+        "openicon"  : "ui-icon-arrowreturn-1-e",
+		// load the subgrid data only once
+		// and the just show/hide
+//		"reloadOnExpand" : false,
+		// select the row when the expand column is clicked
+		"selectOnExpand" : true
+	},
+    afterInsertRow: function(rowid, aData){
+    	switch (aData.activo) {
+    		case '1':
+    			jQuery("#sg3").jqGrid('setCell',rowid,'name','',{color:'green'});
+    		break;
+    		case '':
+    			jQuery("#sg3").jqGrid('setCell',rowid,'name','',{color:'red'});
+    		break;
+    		case '0':
+    			jQuery("#sg3").jqGrid('setCell',rowid,'name','',{color:'blue'});
+    		break;
+    		
+    	}
+	},
+	subGridRowExpanded: function(subgrid_id, row_id) {
+		var eventgrid, eventpager;
+		eventgrid = subgrid_id+"_events_"+row_id;
+		eventpager = eventgrid+"_pager";
+		var totgrid, totpage;
+		totgrid = subgrid_id+"_totales_"+row_id;
+		totpager = totpage+"_pager";
+		var tmp =	"<div>";
+		tmp		+=	"<div style='float:right;'>";
+		tmp		+=	"	<table id='"+eventgrid+"' class='scroll'></table><div id='"+eventpager+"' class='scroll'></div>";
+		tmp		+= 	"</div>";
+/*
+		tmp		+=	"<div style='float:left;'>";
+		tmp		+=	"	<table id='"+totgrid+"' class='scroll'></table><div id='"+totpager+"' class='scroll'></div>";
+		tmp		+=	"</div>";
+*/
+		tmp		+=	"</div>";
+		$("#"+subgrid_id).html(tmp);
+		var totalData = [];
+		var eventData = [];
+		if (ctrlsData[row_id]){
+/*
+			for (var varname in ctrlsData[row_id]){
+				if (typeof ctrlsData[row_id][varname] != "object"){
+//						if (jQuery("#"+totgrid).jqGrid('setRowData',varname,{id:varname, value:ctrlsData[row_id][varname]}) == false)
+//							jQuery("#"+totgrid).jqGrid('addRowData',varname,{id:varname, value:ctrlsData[row_id][varname]});
+					totalData.push({id:varname, value:ctrlsData[row_id][varname]});
+				}
+			}
+*/
+			for (var varname in ctrlsData[row_id].data){
+				if (typeof ctrlsData[row_id].data[varname] == "object"){
+					var Obj = {};
+					Obj['id'] = varname;
+					for (var evarname in ctrlsData[row_id].data[varname]){
+						if (evarname == 'hora')
+							Obj[evarname] = strdate(ctrlsData[row_id].data[varname][evarname]*1000);
+						else
+							Obj[evarname] = ctrlsData[row_id].data[varname][evarname];
+					}
+					eventData.push(Obj);
+				}
+			};
+		}
+		jQuery("#"+eventgrid).jqGrid({
+			datatype: "local"
+			,data: eventData
+			,colNames: ['Evento','hora','msg','%Error','Detalle']
+			,colModel: [
+				{name:"id",index:"id",width:160}
+				,{name:"hora",index:"hora",width:130,align:"right"}
+				,{name:"msg",index:"msg",width:70}
+				,{name:"errorpercent",index:"errorpercent",width:70,align:"right"}
+				,{name:"detalle",index:"detalle",width:200,sortable:false}
+			]
+		   	,rowNum:20
+		   	,pager: eventpager
+		   	,sortname: 'id'
+		    ,sortorder: "asc"
+		    ,height: '100%'
+		});
+		jQuery("#"+eventgrid).jqGrid('navGrid',"#"+eventpager,{edit:false,add:false,del:false,search:false,refresh:false,view:true});
+		
+/*
+		jQuery("#"+totgrid).jqGrid({
+			 datatype : 'local'
+			,data: totalData
+			,colNames: ['No','Value']
+			,colModel: [
+				 {name:"id",index:"id",width:80,key:true}
+				,{name:"value",index:"value",width:130}
+			]
+		   	,rowNum:10
+		   	,pager: totpager
+		   	,sortname: 'id'
+		    ,sortorder: "asc"
+		    ,height: '100%'
+		});
+		jQuery("#"+totgrid).jqGrid('navGrid',"#"+totpager,{edit:false,add:false,del:false})
+*/
+	}
+});
+jQuery("#sg3").jqGrid('navGrid','#psg3',{add:true,edit:true,del:false,search:false});
+	$(document).ready(function () {
+	jQuery("#gbox_sg3").css("margin","auto");
+	$(window).bind('resize', function() {
+		var myWidth = $(window).width()-20;
+		var myHeight = $(window).height()-130;
+		$("#sg3").setGridWidth(myWidth,false);
+		$("#sg3").setGridHeight(myHeight);
+	}).trigger('resize');
+		myStatus();
+	});
+</script>
+</body>
+</HTML>
