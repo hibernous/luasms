@@ -18,7 +18,7 @@ function connectSocket(host, port, evt)
 	return cli
 end
 
-local host = "172.17.0.56"
+local host = "127.0.0.1"
 local port = "8181"
 local cli = connectSocket(host, port, __FORM["event"])
 

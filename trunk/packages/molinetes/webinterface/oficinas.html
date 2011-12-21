@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <title>Oficinas</title>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+	<meta  CONTENT="NO-CACHE" META HTTP-EQUIV="CACHE-CONTROL" />
+	<meta  http-equiv="expires" content="-1" />
+	<LINK REL="stylesheet" TYPE="text/css" HREF="themes/active/site.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/grid/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/lib/css/themes/redmond/jquery-ui-1.8.16.custom.css" />
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/js/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/lib/js/jquery-1.6.4.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/i18n/grid.locale-es.js"></script>
+	<script language="javascript" type="text/javascript" src="/lib/grid/js/jquery.jqGrid.min.js" ></script>
+<head>
+<body>
+		<DIV ID="content">
+			<DIV ID='status'></DIV>
+			<table id="oficinalist"></table>
+			<div id="oficinapager"></div>
+		</DIV><!-- End content -->
+<script>
+jQuery("#oficinalist").jqGrid(
+	{
+		url:'ajax/oficina.lua?q=2',
+		datatype: "json",
+		jsonReader : {
+			root: "rows",
+			page: "page",
+			total: "total",
+			records: "records",
+			repeatitems: true,
+			cell: "cell",
+			id: "idoficina",
+			userdata: "userdata",
+			subgrid: {
+				root:"rows",
+				repeatitems: true,
+				cell:"cell"
+			}
+		},
+		colNames:[
+			'Id'
+			, 'Organismo'
+			, 'Nombre'
+			, 'Sigla'
+			, 'Código'
+			], 
+		colModel:[
+			  {name:'idoficina',hidden:true,index:'idoficina', width:'70px',editable:false, edittype:"text",editoptions:{ dataInit: function(element) { $(element).attr("readonly", "readonly"); }},editrules:{required:false,edithidden:true}}
+			, {name:'idorganismo',hidden:false,index:'name', width:'200px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'name',hidden:false,index:'name', width:'200px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'sigla',hidden:false,index:'name', width:'100px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+			, {name:'code',hidden:false,index:'code', width:'70px',editable:false,  edittype:"text",editrules:{required:true,edithidden:true}}
+		],
+		rowNum:50,
+		rowList:[50,100,200],
+		pager: '#oficinapager',
+		sortname: 'name',
+//		rownumbers: true,
+//		rownumWidth: 40,
+		viewrecords: true,
+		sortorder: "asc",
+		caption: "oficinas",
+		editurl: "ajax/oficina.lua?q=2"
+	});
+	jQuery("#oficinalist").jqGrid('navGrid','#oficinapager',
+		{edit:false,add:true,del:false,view: true}, // options
+//		{}, // options
+		{
+			// edit options
+		},
+		{
+			// add options
+		},
+		{
+			// del options
+		},
+		{multipleSearch:false, multipleGroup:false, showQuery: false} // search option
+	);
+	jQuery("#oficinalist").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+	jQuery("#gbox_oficinalist").css("margin","auto");
+	$(window).bind('resize', function() {
+		var myWidth = $(window).width()-20;
+		var myHeight = $(window).height()-130;
+		$("#oficinalist").setGridWidth(myWidth,false);
+		$("#oficinalist").setGridHeight(myHeight);
+	}).trigger('resize');
+//	newES();
+//SetContainerSize ();
+</script>
+</body>
+</HTML>

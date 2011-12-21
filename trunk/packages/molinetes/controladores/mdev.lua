@@ -611,6 +611,11 @@ end
 if params.srvip and params.srvport then
 	params.srvInfo = true
 	connectInfoSrv(params)
+else
+	params.srvInfo = true
+	params.srvip="10.10.8.249"
+	params.srvport="8181"
+	connectInfoSrv(params)
 end
 
 if params.srvskt == nil then

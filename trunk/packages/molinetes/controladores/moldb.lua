@@ -14,7 +14,7 @@ es["6"]		= "Buzon-No Sale"
 function openMy()
 	print("openMy()")
 --	local host = "172.17.0.56"
-	local host = "127.0.0.1"
+	local host = "10.10.8.249"
 	local connMy, serr = mysql:connect("molinetes","root", "pirulo", host)
 	if not connMy then
 --		printDL(2,"Error al conectar con MySql en Host: "..host)

@@ -3,13 +3,13 @@ CREATE DATABASE IF NOT EXISTS molinetes$$
 USE molinetes$$
 
 -- --------------------------------------------------------------------------------
--- get_organismo(id INT)
+-- get_organismo(prs_id INT)
 -- Note: Obtiene Organismo y Oficina para el id de la persona
 -- Parametro de entrada id de la tabla personas
 -- SALIDA String con el Nombre del Organismo y la Oficina 
 -- --------------------------------------------------------------------------------
 CREATE DEFINER=`root`@`localhost` 
-FUNCTION `get_organismo`(prs_id INT) 
+FUNCTION `get_prsorgofi`(prs_id INT) 
 RETURNS varchar(250)
 BEGIN
     DECLARE organismo VARCHAR(250) DEFAULT '';
