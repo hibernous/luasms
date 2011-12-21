@@ -288,12 +288,14 @@ jQuery("#sg3").jqGrid({
 		jQuery("#"+eventgrid).jqGrid({
 			datatype: "local"
 			,data: eventData
-			,colNames: ['Evento','hora','msg','%Error','Detalle']
+			,colNames: ['Evento','hora','msg','Veces','Errores','%Error','Detalle']
 			,colModel: [
 				{name:"id",index:"id",width:160}
-				,{name:"hora",index:"hora",width:130,align:"right"}
+				,{name:"hora",index:"hora",width:117,align:"right"}
 				,{name:"msg",index:"msg",width:70}
-				,{name:"errorpercent",index:"errorpercent",width:70,align:"right"}
+				,{name:"count",index:"count",width:65,align:"right"}
+				,{name:"fail",index:"fail",width:65,align:"right"}
+				,{name:"errorpercent",index:"errorpercent",width:65,align:"right"}
 				,{name:"detalle",index:"detalle",width:200,sortable:false}
 			]
 		   	,rowNum:20

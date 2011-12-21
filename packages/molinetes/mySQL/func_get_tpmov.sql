@@ -8,9 +8,9 @@ USE molinetes$$
 -- PARAM_IN: tipo de movimiento en table de registraciones
 -- SALIDA: String con el Nombre del Movimiento
 -- --------------------------------------------------------------------------------
-CREATE OR REPLACE DEFINER=`root`@`localhost` 
+CREATE DEFINER=`root`@`localhost` 
 FUNCTION `get_tpmov`(tpmov INT) 
-RETURNS varchar(20) CHARSET utf8 COLLATE utf8_spanish_ci
+RETURNS varchar(20)
 BEGIN
     DECLARE strmov VARCHAR(20) DEFAULT '';
     CASE tpmov

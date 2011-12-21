@@ -8,12 +8,11 @@ USE molinetes$$
 -- PARAM_IN: ctrlid un id de controlador
 -- SALIDA: Descripcion del controlador
 -- --------------------------------------------------------------------------------
-CREATE OR REPLACE DEFINER=`root`@`localhost` 
-FUNCTION `get_ctrl_name`(ctrlid VARCHAR(45)) 
-RETURNS varchar(45) CHARSET utf8 COLLATE utf8_spanish_ci
+CREATE FUNCTION `molinetes`.`get_ctrl_name`(ctrlid VARCHAR(45)) 
+RETURNS varchar(45)
 BEGIN
     DECLARE strname VARCHAR(45) DEFAULT '';
     SET strname = (SELECT name from ctrls where id=ctrlid);
     RETURN strname;
 END
-$$
+
