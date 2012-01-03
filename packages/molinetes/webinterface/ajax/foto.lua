@@ -1,8 +1,7 @@
-require ("utils.cgi_env")
-require "luasql.mysql"
-mysql = luasql.mysql()
+require("lua.ajaxresponse")
+require("connectdb")
 --connMy, serr = mysql:connect("molinetes","root", "pirulo","localhost")
-connMy, serr = mysql:connect("molinetes","root", "pirulo","172.17.0.56")
+--connMy, serr = mysql:connect("molinetes","root", "pirulo","172.17.0.56")
 
 function addslashes(s)
   s = string.gsub(s, "(['\"\\])", "\\%1")
@@ -10,7 +9,7 @@ function addslashes(s)
 end
 
 --local cur, serror = connMS:execute("SELECT Foto FROM Ciudadanos WHERE Id=CAST('"..__FORM.foto.."' AS uniqueidentifier)")
-local cur, serror = connMy:execute("SELECT data FROM fotos WHERE id='"..__FORM.foto.."'")
+local cur, serror = conMy:execute("SELECT data FROM fotos WHERE id='"..__FORM.foto.."'")
 if serror then
 	print(serror)
 	os.exit(0)
